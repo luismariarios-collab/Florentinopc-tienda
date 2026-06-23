@@ -197,12 +197,23 @@ nav::-webkit-scrollbar { display:none; }
 }
 
 .card-footer { padding:0 0.9rem 0.9rem; }
-.price-old { font-size:0.78rem; color:var(--text-dim); text-decoration:line-through; }
-.price {
-  font-family:'Syne',sans-serif; font-size:1.55rem; font-weight:800;
-  color:var(--navy); letter-spacing:-0.02em; line-height:1.15;
+.price-row { display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap; }
+.price-old {
+  font-size:0.68rem; color:var(--text-dim); text-decoration:line-through;
+  font-weight:500;
 }
-.price-cuotas { font-size:0.72rem; color:var(--blue); font-weight:700; margin-top:0.1rem; }
+.price-tag {
+  display:inline-flex; align-items:baseline; gap:1px;
+  background: linear-gradient(135deg, var(--navy), var(--navy3));
+  color:white; padding:0.2rem 0.55rem; border-radius:7px;
+  font-family:'Syne',sans-serif; font-weight:700;
+}
+.price-tag .sym { font-size:0.62rem; opacity:0.7; align-self:flex-start; margin-top:2px; }
+.price-tag .num { font-size:0.92rem; letter-spacing:-0.01em; }
+.price-cuotas {
+  font-size:0.66rem; color:var(--text-dim); font-weight:500; margin-top:0.35rem;
+}
+.price-cuotas strong { color:var(--blue); font-weight:700; }
 .encargo-time {
   display:inline-block; margin-top:0.3rem; font-size:0.66rem; color:#8B6A1A;
   background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3);
@@ -257,7 +268,7 @@ nav::-webkit-scrollbar { display:none; }
 .cuota-opt .val { font-size:0.63rem; color:var(--danger); font-weight:700; margin-top:1px; }
 .total-row { display:flex; justify-content:space-between; align-items:baseline; }
 .total-label { font-size:0.85rem; color:var(--text-mid); font-weight:600; }
-.total-amount { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--navy); }
+.total-amount { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:var(--navy); }
 .cuota-info { font-size:0.75rem; color:var(--text-mid); text-align:right; min-height:1rem; }
 .btn-primary { background:var(--navy); color:white; border:none; padding:0.85rem; border-radius:50px; font-weight:700; font-size:0.9rem; cursor:pointer; width:100%; transition:0.2s; display:flex; align-items:center; justify-content:center; gap:0.5rem; }
 .btn-primary:hover { background:var(--blue); }
@@ -306,9 +317,24 @@ nav::-webkit-scrollbar { display:none; }
 .wa-float svg { width:27px; height:27px; }
 
 /* ── CONTACT + FOOTER ── */
-.contact-section { background:var(--navy); padding:2.5rem 1.25rem; margin-top:1.5rem; }
+.contact-section {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy3) 60%, #1a3068 100%);
+  padding:2.75rem 1.25rem; margin-top:2rem; position:relative; overflow:hidden;
+}
+.contact-section::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 60% 50% at 90% 10%, rgba(45,169,240,0.12), transparent),
+              radial-gradient(ellipse 50% 50% at 5% 95%, rgba(201,168,76,0.1), transparent);
+  pointer-events:none;
+}
+.contact-grid { position:relative; z-index:1; }
 .contact-grid { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; }
-.contact-col-title { font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:700; color:var(--gold2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.75rem; }
+.contact-col-title {
+  font-family:'Syne',sans-serif; font-size:0.78rem; font-weight:700; color:var(--gold2);
+  text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.85rem;
+  display:flex; align-items:center; gap:0.5rem;
+}
+.contact-col-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, rgba(232,201,106,0.3), transparent); }
 .contact-info { font-size:0.82rem; color:rgba(255,255,255,0.6); line-height:1.9; }
 .contact-info a { color:rgba(255,255,255,0.6); text-decoration:none; display:flex; align-items:center; gap:0.45rem; margin-bottom:0.4rem; transition:0.2s; }
 .contact-info a:hover { color:var(--blue-light); }
@@ -333,7 +359,7 @@ footer strong { color:var(--gold2); }
   .grid { grid-template-columns:1fr 1fr; gap:0.65rem; }
   .card-body { padding:0.7rem; }
   .card-footer { padding:0 0.7rem 0.7rem; }
-  .price { font-size:1.25rem; }
+  .price-tag .num { font-size:0.82rem; }
   .hero h1 { font-size:1.65rem; }
   .benefits-grid { grid-template-columns:1fr 1fr; }
   .benefit-text strong { font-size:0.75rem; }
@@ -413,7 +439,7 @@ footer strong { color:var(--gold2); }
     </div>
     <div class="benefit-item">
       <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852 1 1.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
-      <div class="benefit-text"><strong>Reparación técnica</strong><span>Service propio</span></div>
+      <div class="benefit-text"><strong>Servicio técnico</strong><span>Taller propio</span></div>
     </div>
   </div>
 </div>
@@ -431,7 +457,10 @@ footer strong { color:var(--gold2); }
   <div class="contact-grid">
     <div>
       <div class="contact-col-title">Ubicación</div>
-      <div class="contact-info">📍 Calle 30 N° 162<br>Ameghino, Buenos Aires</div>
+      <div class="contact-info" style="display:flex;align-items:flex-start;gap:0.5rem;">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue-light)" stroke-width="2" style="margin-top:2px;flex-shrink:0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+  <span>Calle 30 N° 162<br>Ameghino, Buenos Aires</span>
+</div>
     </div>
     <div>
       <div class="contact-col-title">Contacto</div>
@@ -556,6 +585,9 @@ footer strong { color:var(--gold2); }
 function formatPrice(n){
   return '$' + Math.round(n).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}).replace(/,/g,'.');
 }
+function formatNum(n){
+  return Math.round(n).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}).replace(/,/g,'.');
+}
 
 let products = JSON.parse(localStorage.getItem('fpc_products3') || '[]');
 let cart = JSON.parse(localStorage.getItem('fpc_cart3') || '[]');
@@ -601,9 +633,11 @@ function renderProducts(){
         ${specs?`<div class="card-specs">${specs}</div>`:''}
       </div>
       <div class="card-footer">
-        ${hasOferta?`<div class="price-old">${formatPrice(p.precioOld)}</div>`:''}
-        <div class="price">${formatPrice(p.precio)}</div>
-        ${p.cuotas>1?`<div class="price-cuotas">${p.cuotas}x ${formatPrice(Math.round(p.precio/p.cuotas))} sin interés</div>`:''}
+        <div class="price-row">
+          ${hasOferta?`<span class="price-old">${formatPrice(p.precioOld)}</span>`:''}
+          <span class="price-tag"><span class="sym">$</span><span class="num">${formatNum(p.precio)}</span></span>
+        </div>
+        ${p.cuotas>1?`<div class="price-cuotas"><strong>${p.cuotas}x</strong> ${formatPrice(Math.round(p.precio/p.cuotas))} sin interés</div>`:''}
         ${p.tipo==='encargo'&&p.tiempo?`<div class="encargo-time">🕐 ${p.tiempo}</div>`:''}
         <button class="btn-add" onclick="event.stopPropagation();addToCart(${p.id})">
           <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
