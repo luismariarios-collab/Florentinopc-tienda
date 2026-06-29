@@ -200,6 +200,37 @@ footer .fnav a:hover{color:var(--gold)}
 .checkout{width:100%;justify-content:center;background:#25d366;color:#06310f;border:none}
 .checkout:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(37,211,102,0.4)}
 
+/* PRODUCT MODAL */
+.pmodal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:130;opacity:0;pointer-events:none;transition:opacity .25s}
+.pmodal-overlay.open{opacity:1;pointer-events:auto}
+.pmodal{position:fixed;inset:0;z-index:131;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:none;opacity:0;transform:translateY(18px);transition:opacity .28s ease,transform .28s ease}
+.pmodal.open{opacity:1;transform:translateY(0);pointer-events:auto}
+.pmodal-box{background:var(--bg-2);border:1px solid rgba(212,164,55,0.25);border-radius:20px;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,0.7)}
+.pmodal-img{width:100%;aspect-ratio:16/9;background:#fff;overflow:hidden;border-radius:20px 20px 0 0;flex-shrink:0}
+.pmodal-img img{width:100%;height:100%;object-fit:cover;object-position:center}
+.pmodal-img .noimg-big{display:flex;align-items:center;justify-content:center;height:100%;color:#9aa3b0;font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:14px}
+.pmodal-body{padding:22px 24px 26px}
+.pmodal-body .pm-cat{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.pmodal-body .pm-name{font-family:'Oswald',sans-serif;font-size:clamp(20px,4vw,28px);font-weight:600;line-height:1.2;margin-bottom:14px}
+.pmodal-specs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.pm-spec{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:7px 13px;font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;color:#c8cdd6}
+.pm-spec b{color:var(--gold-soft);display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.pmodal-price-row{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.pm-old{color:var(--muted);text-decoration:line-through;font-size:15px}
+.pm-price{font-family:'Oswald',sans-serif;font-weight:700;font-size:38px;letter-spacing:-0.5px;color:var(--text);line-height:1}
+.pm-cuota{color:var(--muted);font-size:13px;font-family:var(--font-mono);margin-bottom:20px}
+.pm-cuota b{color:var(--gold-soft)}
+.pmodal-actions{display:flex;gap:12px;flex-wrap:wrap}
+.pmodal-actions .btn{flex:1;min-width:140px;justify-content:center}
+.pm-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;line-height:1}
+.pm-close:hover{background:var(--red)}
+.pmodal-wrap{position:relative}
+@media(min-width:600px){
+  .pmodal-box{flex-direction:row;max-height:86vh}
+  .pmodal-img{width:45%;aspect-ratio:auto;border-radius:20px 0 0 20px;min-height:320px}
+  .pmodal-body{flex:1;overflow-y:auto;padding:28px 26px}
+}
+
 /* ADMIN */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:120;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto}
 .modal.open{display:flex}
@@ -426,6 +457,29 @@ footer .fnav a:hover{color:var(--gold)}
   <a href="#contacto" class="mm-link">Contacto</a>
 </div>
 
+<!-- PRODUCT MODAL -->
+<div class="pmodal-overlay" id="pmodalOverlay"></div>
+<div class="pmodal" id="pmodal" role="dialog" aria-modal="true">
+  <div class="pmodal-box pmodal-wrap">
+    <button class="pm-close" id="pmClose" aria-label="Cerrar">&times;</button>
+    <div class="pmodal-img" id="pmImg"></div>
+    <div class="pmodal-body">
+      <div class="pm-cat" id="pmCat"></div>
+      <div class="pm-name" id="pmName"></div>
+      <div class="pmodal-specs" id="pmSpecs"></div>
+      <div class="pmodal-price-row">
+        <div class="pm-old" id="pmOld" style="display:none"></div>
+        <div class="pm-price" id="pmPrice"></div>
+      </div>
+      <div class="pm-cuota" id="pmCuota"></div>
+      <div class="pmodal-actions">
+        <button class="btn btn-gold" id="pmAdd">Agregar al carrito</button>
+        <button class="btn" id="pmWa" style="background:#25d366;color:#06310f;border:none">Consultar por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN -->
 <div class="modal" id="adminModal">
   <div class="modal-box">
@@ -563,7 +617,12 @@ function renderGrid(){
   getEl('grid').innerHTML = html;
   var btns = getEl('grid').getElementsByClassName('add');
   for(var b = 0; b < btns.length; b++){
-    btns[b].onclick = function(){ addToCart(parseInt(this.getAttribute('data-id'), 10)); };
+    btns[b].onclick = function(e){ e.stopPropagation(); addToCart(parseInt(this.getAttribute('data-id'), 10)); };
+  }
+  var cards = getEl('grid').getElementsByClassName('card');
+  for(var c = 0; c < cards.length; c++){
+    cards[c].style.cursor = 'pointer';
+    cards[c].onclick = function(){ openProductModal(parseInt(this.querySelector('.add').getAttribute('data-id'), 10)); };
   }
 }
 
@@ -766,6 +825,69 @@ function renderAdminList(){
   for(var b = 0; b < dl.length; b++){ dl[b].onclick = function(){ delProd(parseInt(this.getAttribute('data-d'),10)); }; }
 }
 
+/* ====== PRODUCT MODAL ====== */
+var currentModalId = null;
+
+function buildSpecs(p){
+  var name = p.name.toLowerCase();
+  var specs = [];
+  var ram = name.match(/(\d+gb)\s+(ddr\d?)/i);
+  if(ram){ specs.push({l:'RAM', v:ram[1].toUpperCase() + ' ' + ram[2].toUpperCase()}); }
+  else {
+    var ram2 = name.match(/(\d+\s*gb)\s*ram/i);
+    if(ram2){ specs.push({l:'RAM', v:ram2[1].toUpperCase()}); }
+  }
+  var ssd = name.match(/(\d+gb)\s*(?:nvme|ssd|m\.2)/i);
+  if(ssd){ specs.push({l:'Almacenamiento', v:ssd[1].toUpperCase() + ' SSD'}); }
+  var proc = name.match(/(?:ryzen\s*\d[\s\w]*?(?=\s+\d+gb|\s+ssd|\s+"|$))/i);
+  if(proc){ specs.push({l:'Procesador', v:proc[0].trim()}); }
+  var intel = name.match(/(?:core\s+i\d[\s\w-]*?(?=\s+\d+gb|\s+ssd|\s+"|$))/i);
+  if(intel){ specs.push({l:'Procesador', v:intel[0].trim()}); }
+  var screen = name.match(/(\d+[.,]?\d*")/i);
+  if(screen){ specs.push({l:'Pantalla', v:screen[1]}); }
+  var gpu = name.match(/(?:rtx\s*\d+\w*|radeon\s*\w+|rx\s*\d+\w*)/i);
+  if(gpu){ specs.push({l:'GPU', v:gpu[0].toUpperCase()}); }
+  return specs;
+}
+
+function openProductModal(id){
+  var p = findProduct(id);
+  if(!p){ return; }
+  currentModalId = id;
+  var imgEl = getEl('pmImg');
+  imgEl.innerHTML = p.img
+    ? '<img src="' + p.img + '" alt="' + p.name + '">'
+    : '<div class="noimg-big">SIN IMAGEN</div>';
+  getEl('pmCat').innerHTML = p.cat;
+  getEl('pmName').innerHTML = p.name;
+  if(p.old && p.old > p.price){
+    getEl('pmOld').innerHTML = money(p.old);
+    getEl('pmOld').style.display = 'block';
+  } else {
+    getEl('pmOld').style.display = 'none';
+  }
+  getEl('pmPrice').innerHTML = money(p.price);
+  var cuotaN = p.cuota_n || 12;
+  var siTxt = p.cuota_si ? ' <b style="color:#4ade80">sin interés</b>' : '';
+  getEl('pmCuota').innerHTML = cuotaN + ' cuotas' + siTxt + ' de <b>' + money(p.price / cuotaN) + '</b> · Cuenta DNI, débito y crédito';
+  var specs = buildSpecs(p);
+  var shtml = '';
+  for(var i = 0; i < specs.length; i++){
+    shtml += '<div class="pm-spec"><b>' + specs[i].l + '</b>' + specs[i].v + '</div>';
+  }
+  getEl('pmSpecs').innerHTML = shtml;
+  getEl('pmodal').className = 'pmodal open';
+  getEl('pmodalOverlay').className = 'pmodal-overlay open';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal(){
+  getEl('pmodal').className = 'pmodal';
+  getEl('pmodalOverlay').className = 'pmodal-overlay';
+  document.body.style.overflow = '';
+  currentModalId = null;
+}
+
 /* ====== INIT ====== */
 function init(){
   loadProducts();
@@ -787,6 +909,22 @@ function init(){
   getEl('contactWa').onclick = function(e){ e.preventDefault(); waSimple(); };
   getEl('contactWaIcon').onclick = function(e){ e.preventDefault(); waSimple(); };
   getEl('footWaIcon').onclick = function(e){ e.preventDefault(); waSimple(); };
+
+  /* modal de producto */
+  getEl('pmClose').onclick = closeProductModal;
+  getEl('pmodalOverlay').onclick = closeProductModal;
+  getEl('pmAdd').onclick = function(){
+    if(currentModalId){ addToCart(currentModalId); closeProductModal(); }
+  };
+  getEl('pmWa').onclick = function(){
+    if(!currentModalId){ return; }
+    var p = findProduct(currentModalId);
+    if(!p){ return; }
+    var cuotaN = p.cuota_n || 12;
+    var siTxt = p.cuota_si ? ' (sin interes)' : '';
+    var txt = 'Hola FlorentinoPc! Me interesa:\n\n' + p.name + '\nPrecio: ' + money(p.price) + '\n' + cuotaN + ' cuotas' + siTxt + ' de ' + money(p.price / cuotaN) + '\n\nMe pueden dar mas info?';
+    window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(txt), '_blank');
+  };
 
   /* cerrar menu mobile al tocar link */
   var mm = document.getElementsByClassName('mm-link');
