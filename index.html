@@ -65,15 +65,15 @@ img{max-width:100%;display:block}
 .qr-block img{width:90px;height:90px;border-radius:8px;flex-shrink:0;image-rendering:pixelated}
 .qr-block .qr-text{font-size:13px;color:var(--muted);line-height:1.5}
 .qr-block .qr-text b{display:block;font-family:'Oswald',sans-serif;font-size:16px;color:var(--text);letter-spacing:.5px;margin-bottom:3px}
-.qr-block .qr-text span{color:var(--gold-soft);font-family:var(--font-mono);font-size:11px}
+.qr-block .qr-text span{color:var(--gold-soft);font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;letter-spacing:1px}
 
 /* HEADER */
 header{position:sticky;top:0;z-index:60;background:rgba(10,14,20,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer}
-.brand .logo{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--gold),#9c7022);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;color:#15100a;font-size:20px}
+.brand .logo{width:46px;height:46px;border-radius:11px;background:linear-gradient(135deg,var(--gold),#9c7022);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;color:#15100a;font-size:24px}
 .brand img.logo{border-radius:50%;background:none;display:block;object-fit:contain;padding:0}
-.brand b{font-family:'Oswald',sans-serif;font-weight:600;font-size:21px;letter-spacing:.5px}
+.brand b{font-family:'Oswald',sans-serif;font-weight:600;font-size:25px;letter-spacing:.5px}
 .brand b span{color:var(--gold)}
 .menu{display:flex;align-items:center;gap:26px}
 .menu a{font-size:14px;color:var(--muted);font-weight:500;transition:color .2s}
@@ -607,6 +607,8 @@ function ytThumb(url){
   return url; /* si no es youtube, devuelve la url tal cual */
 }
 
+function onImgErr(el){ el.style.display='none'; }
+
 /* ====== RENDER FILTROS ====== */
 function renderFilters(){
   var cats = ['Todos'];
@@ -645,7 +647,7 @@ function renderGrid(){
         + '</div>'
       : '';
     var imgWrap = cardImgSrc
-      ? '<div style="position:relative;width:100%;height:100%"><img src="' + cardImgSrc + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">' + playOverlay + '</div>'
+      ? '<div style="position:relative;width:100%;height:100%"><img src="' + cardImgSrc + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover" onerror="onImgErr(this)">' + playOverlay + '</div>'
       : '<span class="noimg">SIN IMAGEN</span>';
     var img = imgWrap;
     var badge = p.offer ? '<span class="badge">OFERTA</span>' : '';
@@ -1077,8 +1079,8 @@ function init(){
   getEl('brandLogo').onclick = function(){
     logoTaps++;
     if(logoTimer){ window.clearTimeout(logoTimer); }
-    logoTimer = window.setTimeout(function(){ logoTaps = 0; }, 1200);
-    if(logoTaps >= 5){ logoTaps = 0; openAdmin(); }
+    logoTimer = window.setTimeout(function(){ logoTaps = 0; }, 2500);
+    if(logoTaps >= 3){ logoTaps = 0; openAdmin(); }
   };
   if(window.location.hash === '#admin'){ openAdmin(); }
 }
