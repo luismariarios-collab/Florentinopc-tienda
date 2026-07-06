@@ -366,6 +366,20 @@ footer .fnav a:hover{color:var(--gold)}
 </section>
 
 <!-- CONTACT -->
+<!-- INSTAGRAM STRIP -->
+<div style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);padding:22px 0">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="#fff" stroke="none"/></svg>
+      <div>
+        <div style="font-family:'Oswald',sans-serif;font-weight:600;font-size:18px;color:#fff;letter-spacing:.5px">@florentinopc_</div>
+        <div style="color:rgba(255,255,255,0.85);font-size:13px">Mirá nuestros armados, reparaciones y novedades</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/florentinopc_" target="_blank" rel="noopener" style="background:#fff;color:#833ab4;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:13px;padding:12px 22px;border-radius:10px;text-decoration:none;flex-shrink:0">Seguinos en Instagram</a>
+  </div>
+</div>
+
 <section class="block" id="contacto">
   <div class="wrap">
     <div class="head-row">
@@ -379,7 +393,7 @@ footer .fnav a:hover{color:var(--gold)}
         <h3>FlorentinoPc</h3>
         <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.7 7-12.2A7 7 0 0 0 5 8.8C5 14.3 12 21 12 21z"/><circle cx="12" cy="9" r="2.4"/></svg></span><span>Calle 30 N&deg; 162, Ameghino, Buenos Aires</span></div>
         <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M8.7 8.6c-.3.9.1 2.2 1.3 3.4 1.2 1.2 2.5 1.6 3.4 1.3.3-.1.4-.4.4-.6l-.2-1-1.4-.4-.6.6c-.6-.3-1-.7-1.3-1.3l.6-.6-.4-1.4-1-.2c-.2 0-.5.1-.6.4z" fill="currentColor" stroke="none"/></svg></span><span>WhatsApp 3388 439333</span></div>
-        <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/></svg></span><span>Instagram @florentinopc_</span></div>
+        <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/></svg></span><span>Instagram <a href="https://instagram.com/florentinopc_" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">@florentinopc_</a> &mdash; mirá nuestros trabajos y armados</span></div>
         <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 2"/></svg></span><span>Lunes a sabado &middot; horario comercial</span></div>
         <div class="social-row" style="justify-content:flex-start;margin:6px 0 18px">
           <a class="soc-btn" href="https://instagram.com/florentinopc_" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/></svg></a>
@@ -501,6 +515,12 @@ footer .fnav a:hover{color:var(--gold)}
         </div>
         <div><label>Imagen (URL, opcional)</label><input id="pImg" placeholder="https://..."></div>
       </div>
+      <div class="field">
+        <label>Video YouTube (URL, opcional)</label>
+        <input id="pVideo" placeholder="https://youtube.com/watch?v=...">
+      </div>
+      <div class="field row" style="display:none">
+      </div>
       <label class="chk"><input type="checkbox" id="pOffer"> Marcar como OFERTA</label>
       <div style="display:flex;gap:10px;margin-top:16px">
         <button class="btn btn-gold" id="saveProd" style="flex:1;justify-content:center">Guardar producto</button>
@@ -563,6 +583,16 @@ function showToast(msg){
   window.setTimeout(function(){ t.className = 'toast'; }, 2200);
 }
 
+/* ====== YOUTUBE THUMBNAIL ====== */
+function ytThumb(url){
+  if(!url){ return ''; }
+  var id = null;
+  var m = url.match(/(?:shorts\/|watch\?v=|youtu\.be\/)([\w-]{11})/);
+  if(m){ id = m[1]; }
+  if(id){ return 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; }
+  return url; /* si no es youtube, devuelve la url tal cual */
+}
+
 /* ====== RENDER FILTROS ====== */
 function renderFilters(){
   var cats = ['Todos'];
@@ -591,7 +621,13 @@ function renderGrid(){
   for(var i = 0; i < products.length; i++){
     var p = products[i];
     if(activeFilter !== 'Todos' && p.cat !== activeFilter){ continue; }
-    var img = p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<span class="noimg">SIN IMAGEN</span>';
+    var ytIdCard = getYouTubeId(p.video || '');
+    var imgSrc = p.img || (ytIdCard ? 'https://img.youtube.com/vi/' + ytIdCard + '/mqdefault.jpg' : '');
+    var playBadgeHtml = ytIdCard ? '<div style="position:absolute;top:8px;left:8px;background:rgba(200,0,0,0.88);border-radius:6px;padding:3px 9px;font-size:10px;font-family:var(--font-mono);color:#fff;letter-spacing:.5px;display:inline-flex;align-items:center;gap:4px"><svg width="9" height="9" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg>VIDEO</div>' : '';
+    var imgWrap = imgSrc
+      ? '<div style="position:relative;width:100%;height:100%"><img src="' + imgSrc + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover">' + playBadgeHtml + '</div>'
+      : '<span class="noimg">SIN IMAGEN</span>';
+    var img = imgWrap;
     var badge = p.offer ? '<span class="badge">OFERTA</span>' : '';
     var old = (p.old && p.old > p.price) ? '<div class="price-old">' + money(p.old) + '</div>' : '';
     var cuotaN = p.cuota_n || 3;
@@ -603,9 +639,14 @@ function renderGrid(){
         '<div class="cat">' + p.cat + '</div>' +
         '<div class="name">' + p.name + '</div>' +
         old +
-        '<div class="price">' + money(p.price) + '</div>' +
-        '<div class="cuota">' + cuotaN + ' cuotas' + siLabel + ' de <b>' + money(p.price / cuotaN) + '</b></div>' +
-        '<button class="btn btn-gold add" data-id="' + p.id + '">Agregar</button>' +
+        (p.price > 0
+          ? '<div class="price">' + money(p.price) + '</div>' +
+            (p.price > 0 ? '<div class="cuota">' + cuotaN + ' cuotas' + siLabel + ' de <b>' + money(p.price / cuotaN) + '</b></div>' : '<div class="cuota" style="color:var(--gold-soft)">Escribinos para saber el precio</div>') +
+            '<button class="btn btn-gold add" data-id="' + p.id + '">Agregar</button>'
+          : '<div class="price" style="font-size:20px;color:var(--gold-soft)">Consultar precio</div>' +
+            '<div class="cuota">Escribinos para armar tu presupuesto</div>' +
+            '<button class="btn btn-ghost add-consult" data-id="' + p.id + '" style="width:100%;justify-content:center">Consultar por WhatsApp</button>'
+        ) +
       '</div>' +
     '</div>';
   }
@@ -614,6 +655,16 @@ function renderGrid(){
   var btns = getEl('grid').getElementsByClassName('add');
   for(var b = 0; b < btns.length; b++){
     btns[b].onclick = function(e){ e.stopPropagation(); addToCart(parseInt(this.getAttribute('data-id'), 10)); };
+  }
+  var cbtns = getEl('grid').getElementsByClassName('add-consult');
+  for(var cb = 0; cb < cbtns.length; cb++){
+    cbtns[cb].onclick = function(e){
+      e.stopPropagation();
+      var p = findProduct(parseInt(this.getAttribute('data-id'), 10));
+      if(!p){ return; }
+      var txt = 'Hola FlorentinoPc! Me interesa: ' + p.name + '\nMe pueden dar un presupuesto?';
+      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(txt), '_blank');
+    };
   }
   var cards = getEl('grid').getElementsByClassName('card');
   for(var c = 0; c < cards.length; c++){
@@ -739,6 +790,25 @@ function closeCart(){ getEl('drawer').className = 'drawer'; getEl('overlay').cla
 function openMenu(){ getEl('mobileMenu').className = 'mobile-menu open'; }
 function closeMenu(){ getEl('mobileMenu').className = 'mobile-menu'; }
 
+/* ====== YOUTUBE ====== */
+function getYouTubeId(url){
+  if(!url){ return null; }
+  var regexes = [
+    /[?&]v=([^&#]+)/,
+    /youtu\.be\/([^?&]+)/,
+    /youtube\.com\/embed\/([^?&]+)/,
+    /youtube\.com\/shorts\/([^?&]+)/
+  ];
+  for(var i = 0; i < regexes.length; i++){
+    var m = url.match(regexes[i]);
+    if(m){ return m[1]; }
+  }
+  return null;
+}
+function isYouTubeUrl(url){
+  return url && (url.indexOf('youtube.com') !== -1 || url.indexOf('youtu.be') !== -1);
+}
+
 /* ====== ADMIN ====== */
 function openAdmin(){ getEl('adminModal').className = 'modal open'; }
 function closeAdmin(){ getEl('adminModal').className = 'modal'; getEl('adminPanel').style.display = 'none'; getEl('adminLogin').style.display = 'block'; getEl('adminPass').value = ''; }
@@ -757,24 +827,25 @@ function clearForm(){
   getEl('pPrice').value = '';
   getEl('pOld').value = '';
   getEl('pImg').value = '';
+  if(getEl('pVideo')){ getEl('pVideo').value = ''; }
   getEl('pOffer').checked = false;
 }
 function saveProd(){
   var name = getEl('pName').value;
   var price = parseInt(getEl('pPrice').value, 10);
-  if(!name || !price){ showToast('Falta nombre o precio'); return; }
+  if(!name){ showToast('Falta el nombre del producto'); return; }
   var old = parseInt(getEl('pOld').value, 10); if(isNaN(old)){ old = 0; }
   var editId = getEl('editId').value;
   if(editId){
     var p = findProduct(parseInt(editId, 10));
     if(p){
       p.name = name; p.price = price; p.old = old;
-      p.cat = getEl('pCat').value; p.img = getEl('pImg').value; p.offer = getEl('pOffer').checked;
+      p.cat = getEl('pCat').value; p.img = getEl('pImg').value; p.video = getEl('pVideo').value; p.offer = getEl('pOffer').checked;
     }
   } else {
     var newId = 1;
     for(var i = 0; i < products.length; i++){ if(products[i].id >= newId){ newId = products[i].id + 1; } }
-    products.push({id:newId,name:name,price:price,old:old,cat:getEl('pCat').value,img:getEl('pImg').value,offer:getEl('pOffer').checked});
+    products.push({id:newId,name:name,price:price,old:old,cat:getEl('pCat').value,img:getEl('pImg').value,video:getEl('pVideo').value,offer:getEl('pOffer').checked});
   }
   saveProducts();
   clearForm();
@@ -791,7 +862,7 @@ function editProd(id){
   getEl('pPrice').value = p.price;
   getEl('pOld').value = p.old || '';
   getEl('pCat').value = p.cat;
-  getEl('pImg').value = p.img || '';
+  getEl('pImg').value = p.img || ''; getEl('pVideo').value = p.video || '';
   getEl('pOffer').checked = !!p.offer;
 }
 function delProd(id){
@@ -851,9 +922,17 @@ function openProductModal(id){
   if(!p){ return; }
   currentModalId = id;
   var imgEl = getEl('pmImg');
-  imgEl.innerHTML = p.img
-    ? '<img src="' + p.img + '" alt="' + p.name + '">'
-    : '<div class="noimg-big">SIN IMAGEN</div>';
+  var ytIdModal = getYouTubeId(p.video || '');
+  if(ytIdModal){
+    imgEl.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytIdModal + '?rel=0&modestbranding=1" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:210px;display:block;border:0"></iframe>';
+    imgEl.style.background = '#000';
+  } else {
+    var mImgSrc = p.img || '';
+    imgEl.innerHTML = mImgSrc
+      ? '<img src="' + mImgSrc + '" alt="' + p.name + '">'
+      : '<div class="noimg-big">SIN IMAGEN</div>';
+    imgEl.style.background = mImgSrc ? '#fff' : '#1a2330';
+  }
   getEl('pmCat').innerHTML = p.cat;
   getEl('pmName').innerHTML = p.name;
   if(p.old && p.old > p.price){
@@ -862,10 +941,17 @@ function openProductModal(id){
   } else {
     getEl('pmOld').style.display = 'none';
   }
-  getEl('pmPrice').innerHTML = money(p.price);
-  var cuotaN = p.cuota_n || 3;
-  var siTxt = p.cuota_si ? ' <b style="color:#4ade80">sin interés</b>' : '';
-  getEl('pmCuota').innerHTML = cuotaN + ' cuotas' + siTxt + ' de <b>' + money(p.price / cuotaN) + '</b> · Promo Cuenta DNI';
+  if(p.price > 0){
+    getEl('pmPrice').innerHTML = p.price > 0 ? money(p.price) : '<span style="font-size:22px;color:var(--gold)">Consultar precio</span>';
+    var cuotaN = p.cuota_n || 3;
+    var siTxt = p.cuota_si ? ' <b style="color:#4ade80">sin interés</b>' : '';
+    getEl('pmCuota').innerHTML = p.price > 0 ? (cuotaN + ' cuotas' + siTxt + ' de <b>' + money(p.price / cuotaN) + '</b> · Promo Cuenta DNI') : 'Consultanos por WhatsApp para conocer el precio';
+    getEl('pmAdd').style.display = 'flex';
+  } else {
+    getEl('pmPrice').innerHTML = '<span style="font-size:22px;color:var(--gold-soft)">Consultar precio</span>';
+    getEl('pmCuota').innerHTML = 'Escribinos y armamos tu presupuesto a medida';
+    getEl('pmAdd').style.display = 'none';
+  }
   var specs = buildSpecs(p);
   var shtml = '';
   for(var i = 0; i < specs.length; i++){
