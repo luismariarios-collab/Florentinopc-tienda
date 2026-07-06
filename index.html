@@ -314,7 +314,7 @@ footer .fnav a:hover{color:var(--gold)}
     <div class="spec-row">
       <span class="spec-chip"><span class="dot"></span><b>Garantia</b>&nbsp;oficial</span>
       <span class="spec-chip"><span class="dot"></span><b>Envios</b>&nbsp;a todo el pais</span>
-      <span class="spec-chip"><span class="dot"></span><b>Hasta 24</b>&nbsp;cuotas</span>
+      <span class="spec-chip"><span class="dot"></span><b>3 cuotas</b>&nbsp;sin interes</span>
     </div>
   </div>
 </section>
@@ -324,7 +324,7 @@ footer .fnav a:hover{color:var(--gold)}
   <div class="wrap">
     <div class="benefits-grid">
       <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 6h11v9H2z"/><path d="M13 10h4l4 3.2V15h-8"/><circle cx="6.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></div><div><b>Envios</b><small>A todo el pais</small></div></div>
-      <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M6 14.5h5"/></svg></div><div><b>Hasta 24 cuotas</b><small>Con todas las tarjetas</small></div></div>
+      <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M6 14.5h5"/></svg></div><div><b>3 cuotas sin interes</b><small>Promo Cuenta DNI</small></div></div>
       <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l7.5 3v6c0 5-3.3 8-7.5 10-4.2-2-7.5-5-7.5-10v-6l7.5-3z"/><path d="M8.7 12l2.3 2.3 4.3-4.3"/></svg></div><div><b>Garantia</b><small>En todos los equipos</small></div></div>
       <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-5.5L20 9v12"/><path d="M9 21v-6.5h6V21"/><path d="M3.5 21h17"/></svg></div><div><b>Retiro en local</b><small>Calle 30 N&deg; 162</small></div></div>
     </div>
@@ -432,12 +432,8 @@ footer .fnav a:hover{color:var(--gold)}
     <div class="cuotas-sel">
       <label>Cuotas</label>
       <select id="cuotasSel">
-        <option value="1">1 pago</option>
-        <option value="3">3 cuotas</option>
-        <option value="6">6 cuotas</option>
-        <option value="12">12 cuotas</option>
-        <option value="18">18 cuotas</option>
-        <option value="24">24 cuotas</option>
+        <option value="1">1 pago (contado)</option>
+        <option value="3" selected>3 cuotas sin interes - Cuenta DNI</option>
       </select>
     </div>
     <div class="totals"><span class="lbl">Total</span><span class="tot" id="cartTotal">$0</span></div>
@@ -522,7 +518,7 @@ footer .fnav a:hover{color:var(--gold)}
 /* ====== CONFIG ====== */
 var WA_NUMBER = '5493388439333';   /* tu WhatsApp en formato internacional */
 var ADMIN_PASS = '0508';           /* CAMBIA esta clave por la que quieras */
-var STORE_KEY = 'fpc_productos';
+var STORE_KEY = 'fpc_productos_v3';
 
 /* ====== PRODUCTOS POR DEFECTO ====== */
 var DEFAULT_PRODUCTS = [
@@ -598,7 +594,7 @@ function renderGrid(){
     var img = p.img ? '<img src="' + p.img + '" alt="' + p.name + '">' : '<span class="noimg">SIN IMAGEN</span>';
     var badge = p.offer ? '<span class="badge">OFERTA</span>' : '';
     var old = (p.old && p.old > p.price) ? '<div class="price-old">' + money(p.old) + '</div>' : '';
-    var cuotaN = p.cuota_n || 12;
+    var cuotaN = p.cuota_n || 3;
     var siLabel = p.cuota_si ? ' s/<b style="color:#4ade80">i</b>' : '';
     html += '<div class="card">' +
       badge +
@@ -708,10 +704,10 @@ function updateTotals(){
   var total = cartTotal();
   getEl('cartTotal').innerHTML = money(total);
   var n = parseInt(getEl('cuotasSel').value, 10);
-  if(n > 1){
-    getEl('cuotaLine').innerHTML = n + ' cuotas de <b style="color:var(--gold-soft)">' + money(total / n) + '</b>';
+  if(n === 3){
+    getEl('cuotaLine').innerHTML = '3 cuotas <b style="color:#4ade80">sin interes</b> de <b style="color:var(--gold-soft)">' + money(total / 3) + '</b> · Promo Cuenta DNI';
   } else {
-    getEl('cuotaLine').innerHTML = 'En 1 pago';
+    getEl('cuotaLine').innerHTML = 'Pago contado';
   }
 }
 
@@ -725,8 +721,8 @@ function checkout(){
     text += '- ' + cart[k].qty + 'x ' + cart[k].name + ' (' + money(cart[k].price * cart[k].qty) + ')\n';
   }
   text += '\nTotal: ' + money(total);
-  if(n > 1){ text += '\nEn ' + n + ' cuotas de ' + money(total / n); }
-  else { text += '\nEn 1 pago'; }
+  if(n === 3){ text += '\nPromo Cuenta DNI: 3 cuotas sin interes de ' + money(total / 3); }
+  else { text += '\nPago contado'; }
   var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text);
   window.open(url, '_blank');
 }
@@ -867,9 +863,9 @@ function openProductModal(id){
     getEl('pmOld').style.display = 'none';
   }
   getEl('pmPrice').innerHTML = money(p.price);
-  var cuotaN = p.cuota_n || 12;
+  var cuotaN = p.cuota_n || 3;
   var siTxt = p.cuota_si ? ' <b style="color:#4ade80">sin interés</b>' : '';
-  getEl('pmCuota').innerHTML = cuotaN + ' cuotas' + siTxt + ' de <b>' + money(p.price / cuotaN) + '</b> · Cuenta DNI, débito y crédito';
+  getEl('pmCuota').innerHTML = cuotaN + ' cuotas' + siTxt + ' de <b>' + money(p.price / cuotaN) + '</b> · Promo Cuenta DNI';
   var specs = buildSpecs(p);
   var shtml = '';
   for(var i = 0; i < specs.length; i++){
@@ -920,7 +916,7 @@ function init(){
     if(!currentModalId){ return; }
     var p = findProduct(currentModalId);
     if(!p){ return; }
-    var cuotaN = p.cuota_n || 12;
+    var cuotaN = p.cuota_n || 3;
     var siTxt = p.cuota_si ? ' (sin interes)' : '';
     var txt = 'Hola FlorentinoPc! Me interesa:\n\n' + p.name + '\nPrecio: ' + money(p.price) + '\n' + cuotaN + ' cuotas' + siTxt + ' de ' + money(p.price / cuotaN) + '\n\nMe pueden dar mas info?';
     window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(txt), '_blank');
