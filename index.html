@@ -499,6 +499,7 @@ footer .fnav a:hover{color:var(--gold)}
         <button class="btn btn-gold" id="pmAdd">Agregar al carrito</button>
         <button class="btn" id="pmWa" style="background:#25d366;color:#06310f;border:none">Consultar por WhatsApp</button>
       </div>
+      <a id="pmYtLink" href="#" target="_blank" rel="noopener" style="display:none;margin-top:12px;font-size:13px;color:var(--muted);text-align:center">Abrir video en YouTube &rarr;</a>
     </div>
   </div>
 </div>
@@ -638,23 +639,31 @@ function renderGrid(){
     var p = products[i];
     if(activeFilter !== 'Todos' && p.cat !== activeFilter){ continue; }
     var ytIdCard = getYouTubeId(p.video || '');
-    var cardImgSrc = p.img || (ytIdCard ? 'https://i.ytimg.com/vi/' + ytIdCard + '/hqdefault.jpg' : '');
-    var playOverlay = ytIdCard
-      ? '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.28)">'
-        + '<div style="width:46px;height:46px;background:rgba(200,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.5)">'
-        + '<svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><polygon points="6,3 20,12 6,21"/></svg></div>'
-        + '<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:#fff;margin-top:7px;text-shadow:0 1px 4px rgba(0,0,0,0.8)">VER VIDEO</span>'
+    var hasVideoCard = !!ytIdCard;
+    var playOverlay = hasVideoCard
+      ? '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">'
+        + '<div style="width:54px;height:54px;background:linear-gradient(135deg,#d4a437,#9c7022);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(212,164,55,0.5)">'
+        + '<svg width="18" height="18" viewBox="0 0 24 24" fill="#15100a"><polygon points="6,3 20,12 6,21"/></svg></div>'
+        + '<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--gold-soft);margin-top:9px;text-transform:uppercase">Ver video</span>'
         + '</div>'
       : '';
-    var imgWrap = cardImgSrc
-      ? '<div style="position:relative;width:100%;height:100%"><img src="' + cardImgSrc + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover" onerror="onImgErr(this)">' + playOverlay + '</div>'
+    var videoBg = hasVideoCard && !p.img
+      ? '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,#1a2a40 0%,#0a0e14 100%)"></div>'
+      : '';
+    var imgSrc2 = p.img || '';
+    var imgWrap = (imgSrc2 || hasVideoCard)
+      ? '<div style="position:relative;width:100%;height:100%">'
+        + videoBg
+        + (imgSrc2 ? '<img src="' + imgSrc2 + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover;position:relative;z-index:1" onerror="onImgErr(this)">' : '')
+        + (hasVideoCard ? '<div style="position:absolute;inset:0;z-index:2">' + playOverlay.replace('<div style="position:absolute;inset:0;', '<div style="position:relative;width:100%;height:100%;') + '</div>' : '')
+        + '</div>'
       : '<span class="noimg">SIN IMAGEN</span>';
     var img = imgWrap;
     var badge = p.offer ? '<span class="badge">OFERTA</span>' : '';
     var old = (p.old && p.old > p.price) ? '<div class="price-old">' + money(p.old) + '</div>' : '';
     var cuotaN = p.cuota_n || 3;
     var siLabel = p.cuota_si ? ' s/<b style="color:#4ade80">i</b>' : '';
-    html += '<div class="card">' +
+    html += '<div class="card" data-pid="' + p.id + '">' +
       badge +
       '<div class="ph">' + img + '</div>' +
       '<div class="body">' +
@@ -691,7 +700,7 @@ function renderGrid(){
   var cards = getEl('grid').getElementsByClassName('card');
   for(var c = 0; c < cards.length; c++){
     cards[c].style.cursor = 'pointer';
-    cards[c].onclick = function(){ openProductModal(parseInt(this.querySelector('.add').getAttribute('data-id'), 10)); };
+    cards[c].onclick = function(){ openProductModal(parseInt(this.getAttribute('data-pid'), 10)); };
   }
 }
 
@@ -1000,6 +1009,15 @@ function openProductModal(id){
     shtml += '<div class="pm-spec"><b>' + specs[i].l + '</b>' + specs[i].v + '</div>';
   }
   getEl('pmSpecs').innerHTML = shtml;
+  var ytLink = getEl('pmYtLink');
+  if(ytLink){
+    if(p.video){
+      ytLink.href = p.video;
+      ytLink.style.display = 'block';
+    } else {
+      ytLink.style.display = 'none';
+    }
+  }
   getEl('pmodal').className = 'pmodal open';
   getEl('pmodalOverlay').className = 'pmodal-overlay open';
   document.body.style.overflow = 'hidden';
