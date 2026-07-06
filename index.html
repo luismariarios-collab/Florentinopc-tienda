@@ -205,6 +205,15 @@ footer .fnav a:hover{color:var(--gold)}
 .checkout{width:100%;justify-content:center;background:#25d366;color:#06310f;border:none}
 .checkout:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(37,211,102,0.4)}
 
+/* UPLOAD IMG */
+.img-upload-area{border:1.5px dashed rgba(212,164,55,0.4);border-radius:10px;padding:12px;margin-top:8px;cursor:pointer;transition:border-color .2s;text-align:center}
+.img-upload-area:hover{border-color:var(--gold)}
+.img-upload-area.has-img{border-style:solid;border-color:rgba(212,164,55,0.5);padding:8px}
+.upload-preview{width:100%;max-height:140px;object-fit:contain;border-radius:8px;display:block;margin-bottom:6px}
+.upload-hint{font-size:12px;color:var(--muted);font-family:var(--font-mono);letter-spacing:.5px}
+.upload-btn-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.upload-btn-row button{flex:1;font-size:12px;padding:8px 10px;min-width:90px}
+
 /* PRODUCT MODAL */
 .pmodal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:130;opacity:0;pointer-events:none;transition:opacity .25s}
 .pmodal-overlay.open{opacity:1;pointer-events:auto}
@@ -531,7 +540,23 @@ footer .fnav a:hover{color:var(--gold)}
             <option>Consolas</option><option>Camaras IP</option><option>Celulares</option>
           </select>
         </div>
-        <div><label>Imagen (URL, opcional)</label><input id="pImg" placeholder="https://..."></div>
+        <div>
+          <label>Imagen</label>
+          <input id="pImg" placeholder="URL externa (opcional)" oninput="syncImgPreview()" style="margin-bottom:6px">
+          <div class="img-upload-area" id="uploadArea" onclick="getEl('imgFileInput').click()">
+            <img id="uploadPreview" class="upload-preview" style="display:none" alt="Preview">
+            <div id="uploadHint">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div class="upload-hint">Toca para subir una foto</div>
+              <div class="upload-hint" style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:3px">JPG, PNG, WEBP &bull; Se comprime automaticamente</div>
+            </div>
+            <div class="upload-btn-row" id="uploadBtnRow" style="display:none">
+              <button class="btn btn-ghost" onclick="event.stopPropagation();getEl('imgFileInput').click()" type="button">Cambiar foto</button>
+              <button class="btn btn-ghost" onclick="event.stopPropagation();clearImgUpload()" type="button" style="color:var(--red);border-color:var(--red)">Quitar</button>
+            </div>
+          </div>
+          <input type="file" id="imgFileInput" accept="image/*" style="display:none" onchange="handleImgUpload(this)">
+        </div>
       </div>
       <div class="field">
         <label>Video YouTube (URL, opcional)</label>
@@ -848,6 +873,75 @@ function isYouTubeUrl(url){
   return url && (url.indexOf('youtube.com') !== -1 || url.indexOf('youtu.be') !== -1);
 }
 
+/* ====== IMG UPLOAD ADMIN ====== */
+function handleImgUpload(input){
+  if(!input.files || !input.files[0]){ return; }
+  var file = input.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var origSrc = e.target.result;
+    var imgEl = new Image();
+    imgEl.onload = function(){
+      /* Comprimir con Canvas: max 900px, calidad 78% */
+      var maxSide = 900;
+      var w = imgEl.width;
+      var h = imgEl.height;
+      if(w > maxSide || h > maxSide){
+        if(w >= h){ h = Math.round(h * maxSide / w); w = maxSide; }
+        else { w = Math.round(w * maxSide / h); h = maxSide; }
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(imgEl, 0, 0, w, h);
+      var compressed = canvas.toDataURL('image/jpeg', 0.78);
+      getEl('pImg').value = compressed;
+      setUploadPreview(compressed);
+    };
+    imgEl.src = origSrc;
+  };
+  reader.readAsDataURL(file);
+}
+
+function setUploadPreview(src){
+  var area = getEl('uploadArea');
+  var preview = getEl('uploadPreview');
+  var hint = getEl('uploadHint');
+  var btnRow = getEl('uploadBtnRow');
+  if(!area || !preview){ return; }
+  if(src && src.length > 10){
+    preview.src = src;
+    preview.style.display = 'block';
+    hint.style.display = 'none';
+    btnRow.style.display = 'flex';
+    area.className = 'img-upload-area has-img';
+  } else {
+    preview.src = '';
+    preview.style.display = 'none';
+    hint.style.display = 'block';
+    btnRow.style.display = 'none';
+    area.className = 'img-upload-area';
+  }
+}
+
+function clearImgUpload(){
+  getEl('pImg').value = '';
+  getEl('imgFileInput').value = '';
+  setUploadPreview('');
+}
+
+function syncImgPreview(){
+  var val = getEl('pImg') ? getEl('pImg').value : '';
+  if(val && val.indexOf('http') === 0){
+    setUploadPreview(val);
+  } else if(val && val.indexOf('data:') === 0){
+    setUploadPreview(val);
+  } else {
+    setUploadPreview('');
+  }
+}
+
 /* ====== VIDEO PREVIEW ADMIN ====== */
 function updateVideoPreview(){
   var url = getEl('pVideo') ? getEl('pVideo').value : '';
@@ -883,6 +977,8 @@ function clearForm(){
   getEl('pOld').value = '';
   getEl('pImg').value = '';
   if(getEl('pVideo')){ getEl('pVideo').value = ''; updateVideoPreview(); }
+  if(getEl('imgFileInput')){ getEl('imgFileInput').value = ''; }
+  setUploadPreview('');
   getEl('pOffer').checked = false;
 }
 function saveProd(){
@@ -917,7 +1013,7 @@ function editProd(id){
   getEl('pPrice').value = p.price;
   getEl('pOld').value = p.old || '';
   getEl('pCat').value = p.cat;
-  getEl('pImg').value = p.img || ''; getEl('pVideo').value = p.video || ''; updateVideoPreview();
+  getEl('pImg').value = p.img || ''; getEl('pVideo').value = p.video || ''; updateVideoPreview(); syncImgPreview();
   getEl('pOffer').checked = !!p.offer;
 }
 function delProd(id){
