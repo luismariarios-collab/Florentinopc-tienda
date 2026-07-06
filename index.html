@@ -61,6 +61,11 @@ img{max-width:100%;display:block}
 .soc-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,164,55,0.4);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold-soft);transition:all .2s;flex-shrink:0}
 .soc-btn:hover{background:var(--gold);color:#15100a;transform:translateY(-2px)}
 .soc-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.qr-block{margin-top:18px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(212,164,55,0.2);border-radius:14px;display:flex;align-items:center;gap:16px}
+.qr-block img{width:90px;height:90px;border-radius:8px;flex-shrink:0;image-rendering:pixelated}
+.qr-block .qr-text{font-size:13px;color:var(--muted);line-height:1.5}
+.qr-block .qr-text b{display:block;font-family:'Oswald',sans-serif;font-size:16px;color:var(--text);letter-spacing:.5px;margin-bottom:3px}
+.qr-block .qr-text span{color:var(--gold-soft);font-family:var(--font-mono);font-size:11px}
 
 /* HEADER */
 header{position:sticky;top:0;z-index:60;background:rgba(10,14,20,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -306,7 +311,7 @@ footer .fnav a:hover{color:var(--gold)}
   <div class="wrap hero-inner">
     <span class="eyebrow">Tecnologia &amp; Gaming &middot; Ameghino</span>
     <h1 class="display">Tecnologia que funciona <i>para vos</i></h1>
-    <p>Armado y reparacion de PC, notebooks, componentes y perifericos gamer. Asesoramiento de verdad, envios y hasta 24 cuotas.</p>
+    <p>Armado y reparacion de PC, notebooks, componentes y perifericos gamer. Envios, todas las tarjetas y consulta promociones vigentes.</p>
     <div class="hero-cta">
       <a href="#productos" class="btn btn-gold">Ver productos</a>
       <a href="#" class="btn btn-ghost" id="heroWa">Consultar por WhatsApp</a>
@@ -395,9 +400,17 @@ footer .fnav a:hover{color:var(--gold)}
         <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M8.7 8.6c-.3.9.1 2.2 1.3 3.4 1.2 1.2 2.5 1.6 3.4 1.3.3-.1.4-.4.4-.6l-.2-1-1.4-.4-.6.6c-.6-.3-1-.7-1.3-1.3l.6-.6-.4-1.4-1-.2c-.2 0-.5.1-.6.4z" fill="currentColor" stroke="none"/></svg></span><span>WhatsApp 3388 439333</span></div>
         <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/></svg></span><span>Instagram <a href="https://instagram.com/florentinopc_" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">@florentinopc_</a> &mdash; mirá nuestros trabajos y armados</span></div>
         <div class="info-row"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 2"/></svg></span><span>Lunes a sabado &middot; horario comercial</span></div>
-        <div class="social-row" style="justify-content:flex-start;margin:6px 0 18px">
+        <div class="social-row" style="justify-content:flex-start;margin:6px 0 14px">
           <a class="soc-btn" href="https://instagram.com/florentinopc_" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/></svg></a>
           <a class="soc-btn" href="#" id="contactWaIcon" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M8.7 8.6c-.3.9.1 2.2 1.3 3.4 1.2 1.2 2.5 1.6 3.4 1.3.3-.1.4-.4.4-.6l-.2-1-1.4-.4-.6.6c-.6-.3-1-.7-1.3-1.3l.6-.6-.4-1.4-1-.2c-.2 0-.5.1-.6.4z" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+        <div class="qr-block">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.instagram.com/florentinopc_/&bgcolor=141B26&color=D4A437&margin=6" alt="QR Instagram FlorentinoPc" loading="lazy">
+          <div class="qr-text">
+            <b>Seguinos en Instagram</b>
+            Escaneá el QR con tu celular<br>y seguinos para ver novedades,<br>armados y promociones.
+            <span style="display:block;margin-top:6px">@florentinopc_</span>
+          </div>
         </div>
         <a href="#" class="btn btn-gold" id="contactWa">Escribinos por WhatsApp</a>
       </div>
