@@ -560,8 +560,21 @@ footer .fnav a:hover{color:var(--gold)}
       </div>
       <div class="field">
         <label>Video YouTube (URL, opcional)</label>
-        <input id="pVideo" placeholder="https://youtube.com/watch?v=..." oninput="updateVideoPreview()">
+        <input id="pVideo" placeholder="https://youtube.com/watch?v=..." oninput="updateVideoPreview(); setVideoUploadPreview('');">
         <div id="videoPreview" style="display:none;margin-top:10px;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:16/9"><iframe id="videoPreviewFrame" src="" frameborder="0" allowfullscreen style="width:100%;height:100%;display:block"></iframe></div>
+        <div class="img-upload-area" id="videoUploadArea" style="margin-top:8px" onclick="getEl('videoFileInput').click()">
+          <div id="videoUploadHint">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <div class="upload-hint">O subí un video desde tu compu</div>
+            <div class="upload-hint" style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:3px">MP4, MOV &bull; Ideal para clips cortos</div>
+          </div>
+          <video id="videoUploadPreview" style="display:none;width:100%;border-radius:8px;max-height:180px" controls></video>
+          <div class="upload-btn-row" id="videoUploadBtnRow" style="display:none">
+            <button class="btn btn-ghost" onclick="event.stopPropagation();getEl('videoFileInput').click()" type="button">Cambiar video</button>
+            <button class="btn btn-ghost" onclick="event.stopPropagation();clearVideoUpload()" type="button" style="color:var(--red);border-color:var(--red)">Quitar</button>
+          </div>
+        </div>
+        <input type="file" id="videoFileInput" accept="video/*" style="display:none" onchange="handleVideoUpload(this)">
       </div>
       <div class="field row" style="display:none">
       </div>
@@ -962,6 +975,54 @@ function syncImgPreview(){
   }
 }
 
+/* ====== VIDEO UPLOAD ADMIN ====== */
+function handleVideoUpload(input){
+  if(!input.files || !input.files[0]){ return; }
+  var file = input.files[0];
+  var maxMB = 200;
+  if(file.size > maxMB * 1024 * 1024){
+    showToast('El video pesa mas de ' + maxMB + 'MB. Usa YouTube para videos largos.');
+    return;
+  }
+  showToast('Subiendo video...');
+  var ext = file.name.split('.').pop() || 'mp4';
+  var fname = 'video_' + Date.now() + '.' + ext;
+  sbUpload(fname, file, file.type || 'video/mp4', function(err, url){
+    if(err){ showToast('Error al subir el video'); return; }
+    getEl('pVideo').value = url;
+    setVideoUploadPreview(url);
+    getEl('videoPreview').style.display = 'none';
+    showToast('Video subido!');
+  });
+}
+function setVideoUploadPreview(src){
+  var area = getEl('videoUploadArea');
+  var preview = getEl('videoUploadPreview');
+  var hint = getEl('videoUploadHint');
+  var btnRow = getEl('videoUploadBtnRow');
+  if(!area || !preview){ return; }
+  var isDirectVideo = src && src.indexOf('http') === 0 && !getYouTubeId(src);
+  if(isDirectVideo){
+    preview.src = src;
+    preview.style.display = 'block';
+    hint.style.display = 'none';
+    btnRow.style.display = 'flex';
+    area.className = 'img-upload-area has-img';
+  } else {
+    preview.src = '';
+    preview.style.display = 'none';
+    hint.style.display = 'block';
+    btnRow.style.display = 'none';
+    area.className = 'img-upload-area';
+  }
+}
+function clearVideoUpload(){
+  getEl('pVideo').value = '';
+  if(getEl('videoFileInput')){ getEl('videoFileInput').value = ''; }
+  setVideoUploadPreview('');
+  updateVideoPreview();
+}
+
 /* ====== VIDEO PREVIEW ADMIN ====== */
 function updateVideoPreview(){
   var url = getEl('pVideo') ? getEl('pVideo').value : '';
@@ -996,7 +1057,7 @@ function clearForm(){
   getEl('pPrice').value = '';
   getEl('pOld').value = '';
   getEl('pImg').value = '';
-  if(getEl('pVideo')){ getEl('pVideo').value = ''; updateVideoPreview(); }
+  clearVideoUpload();
   if(getEl('imgFileInput')){ getEl('imgFileInput').value = ''; }
   setUploadPreview('');
   getEl('pOffer').checked = false;
@@ -1031,7 +1092,7 @@ function editProd(id){
   getEl('pPrice').value = p.price;
   getEl('pOld').value = p.old || '';
   getEl('pCat').value = p.cat;
-  getEl('pImg').value = p.img || ''; getEl('pVideo').value = p.video || ''; updateVideoPreview(); syncImgPreview();
+  getEl('pImg').value = p.img || ''; getEl('pVideo').value = p.video || ''; updateVideoPreview(); syncImgPreview(); setVideoUploadPreview(p.video || '');
   getEl('pOffer').checked = !!p.offer;
 }
 function delProd(id){
@@ -1090,8 +1151,12 @@ function openProductModal(id){
   currentModalId = id;
   var imgEl = getEl('pmImg');
   var ytIdModal = getYouTubeId(p.video || '');
+  var isDirectVid = p.video && p.video.indexOf('http') === 0 && !ytIdModal;
   if(ytIdModal){
     imgEl.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytIdModal + '?rel=0&modestbranding=1" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:210px;display:block;border:0"></iframe>';
+    imgEl.style.background = '#000';
+  } else if(isDirectVid){
+    imgEl.innerHTML = '<video src="' + p.video + '" controls style="width:100%;height:100%;min-height:210px;display:block;background:#000;object-fit:contain"></video>';
     imgEl.style.background = '#000';
   } else {
     var mImgSrc = p.img || '';
