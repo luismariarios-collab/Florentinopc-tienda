@@ -61,6 +61,14 @@ img{max-width:100%;display:block}
 .soc-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,164,55,0.4);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold-soft);transition:all .2s;flex-shrink:0}
 .soc-btn:hover{background:var(--gold);color:#15100a;transform:translateY(-2px)}
 .soc-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.gallery-strip{display:flex;gap:6px;padding:8px;background:#05080d;flex-shrink:0;overflow-x:auto}
+.gallery-thumb{width:58px;height:58px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.65;transition:all .2s;flex-shrink:0}
+.gallery-thumb.active{border-color:var(--gold);opacity:1}
+.gallery-main{flex:1;min-height:0;overflow:hidden;position:relative}
+.gallery-main img,.gallery-main video,.gallery-main iframe{width:100%;height:100%;object-fit:cover;display:block}
+.upload-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.slot-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:4px}
+.slot-label b{color:var(--gold-soft)}
 .qr-block{margin-top:18px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(212,164,55,0.2);border-radius:14px;display:flex;align-items:center;gap:16px}
 .qr-block img{width:90px;height:90px;border-radius:8px;flex-shrink:0;image-rendering:pixelated}
 .qr-block .qr-text{font-size:13px;color:var(--muted);line-height:1.5}
@@ -541,23 +549,15 @@ footer .fnav a:hover{color:var(--gold)}
           </select>
         </div>
         <div>
-          <label>Imagen</label>
-          <input id="pImg" placeholder="URL externa (opcional)" oninput="syncImgPreview()" style="margin-bottom:6px">
-          <div class="img-upload-area" id="uploadArea" onclick="getEl('imgFileInput').click()">
-            <img id="uploadPreview" class="upload-preview" style="display:none" alt="Preview">
-            <div id="uploadHint">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <div class="upload-hint">Toca para subir una foto</div>
-              <div class="upload-hint" style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:3px">JPG, PNG, WEBP &bull; Se comprime automaticamente</div>
-            </div>
-            <div class="upload-btn-row" id="uploadBtnRow" style="display:none">
-              <button class="btn btn-ghost" onclick="event.stopPropagation();getEl('imgFileInput').click()" type="button">Cambiar foto</button>
-              <button class="btn btn-ghost" onclick="event.stopPropagation();clearImgUpload()" type="button" style="color:var(--red);border-color:var(--red)">Quitar</button>
-            </div>
+          <label>Fotos (hasta 3)</label>
+          <div class="upload-slots">
+            <div><div class="slot-label"><b>Foto 1 - principal</b></div><div class="img-upload-area" id="uploadArea1" onclick="getEl('imgFileInput1').click()"><img id="uploadPreview1" class="upload-preview" style="display:none" alt="Foto 1"><div id="uploadHint1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="upload-hint" style="font-size:11px">Subir foto</div></div><div class="upload-btn-row" id="uploadBtnRow1" style="display:none"><button class="btn btn-ghost" onclick="event.stopPropagation();getEl('imgFileInput1').click()" type="button" style="font-size:11px;padding:6px 8px">Cambiar</button><button class="btn btn-ghost" onclick="event.stopPropagation();clearImgUpload(1)" type="button" style="font-size:11px;padding:6px 8px;color:var(--red);border-color:var(--red)">Quitar</button></div></div><input type="file" id="imgFileInput1" accept="image/*" style="display:none" onchange="handleImgUpload(this,1)"></div>
+            <div><div class="slot-label"><b>Foto 2</b></div><div class="img-upload-area" id="uploadArea2" onclick="getEl('imgFileInput2').click()"><img id="uploadPreview2" class="upload-preview" style="display:none" alt="Foto 2"><div id="uploadHint2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="upload-hint" style="font-size:11px">Subir foto</div></div><div class="upload-btn-row" id="uploadBtnRow2" style="display:none"><button class="btn btn-ghost" onclick="event.stopPropagation();getEl('imgFileInput2').click()" type="button" style="font-size:11px;padding:6px 8px">Cambiar</button><button class="btn btn-ghost" onclick="event.stopPropagation();clearImgUpload(2)" type="button" style="font-size:11px;padding:6px 8px;color:var(--red);border-color:var(--red)">Quitar</button></div></div><input type="file" id="imgFileInput2" accept="image/*" style="display:none" onchange="handleImgUpload(this,2)"></div>
+            <div><div class="slot-label"><b>Foto 3</b></div><div class="img-upload-area" id="uploadArea3" onclick="getEl('imgFileInput3').click()"><img id="uploadPreview3" class="upload-preview" style="display:none" alt="Foto 3"><div id="uploadHint3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="upload-hint" style="font-size:11px">Subir foto</div></div><div class="upload-btn-row" id="uploadBtnRow3" style="display:none"><button class="btn btn-ghost" onclick="event.stopPropagation();getEl('imgFileInput3').click()" type="button" style="font-size:11px;padding:6px 8px">Cambiar</button><button class="btn btn-ghost" onclick="event.stopPropagation();clearImgUpload(3)" type="button" style="font-size:11px;padding:6px 8px;color:var(--red);border-color:var(--red)">Quitar</button></div></div><input type="file" id="imgFileInput3" accept="image/*" style="display:none" onchange="handleImgUpload(this,3)"></div>
           </div>
-          <input type="file" id="imgFileInput" accept="image/*" style="display:none" onchange="handleImgUpload(this)">
         </div>
       </div>
+      <input type="hidden" id="pImg2"><input type="hidden" id="pImg3">
       <div class="field">
         <label>Video YouTube (URL, opcional)</label>
         <input id="pVideo" placeholder="https://youtube.com/watch?v=..." oninput="updateVideoPreview(); setVideoUploadPreview('');">
@@ -611,7 +611,7 @@ function sbPost(ep,body,cb){var x=new XMLHttpRequest();x.open('POST',SB_URL+'/re
 function sbPatch(ep,body,cb){var x=new XMLHttpRequest();x.open('PATCH',SB_URL+'/rest/v1/'+ep);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.setRequestHeader('Content-Type','application/json');x.setRequestHeader('Prefer','return=representation');x.onload=function(){try{cb(null,JSON.parse(x.responseText));}catch(e){cb(e);}};x.onerror=function(){cb(new Error('red'));};x.send(JSON.stringify(body));}
 function sbDel(ep,cb){var x=new XMLHttpRequest();x.open('DELETE',SB_URL+'/rest/v1/'+ep);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.onload=function(){cb(null);};x.onerror=function(){cb(new Error('red'));};x.send();}
 function sbUpload(fname,blob,mime,cb){var x=new XMLHttpRequest();x.open('POST',SB_URL+'/storage/v1/object/'+SB_BUCKET+'/'+fname);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.setRequestHeader('Content-Type',mime);x.setRequestHeader('x-upsert','true');x.onload=function(){if(x.status>=200&&x.status<300){cb(null,SB_URL+'/storage/v1/object/public/'+SB_BUCKET+'/'+fname);}else{cb(new Error('upload '+x.status));}};x.onerror=function(){cb(new Error('red'));};x.send(blob);}
-function rowToProduct(r){return {id:r.id,name:r.name,price:r.price||0,old:r.old_price||0,cat:r.category||'Notebooks',img:r.img_url||'',video:r.video_url||'',offer:!!r.offer,cuota_n:r.cuota_n||3,cuota_si:r.cuota_si!==false};}
+function rowToProduct(r){return {id:r.id,name:r.name,price:r.price||0,old:r.old_price||0,cat:r.category||'Notebooks',img:r.img_url||'',img2:r.img_url_2||'',img3:r.img_url_3||'',video:r.video_url||'',offer:!!r.offer,cuota_n:r.cuota_n||3,cuota_si:r.cuota_si!==false};}
 
 /* ====== STORAGE SEGURO ====== */
 function loadProducts(cb){
@@ -895,7 +895,15 @@ function isYouTubeUrl(url){
 }
 
 /* ====== IMG UPLOAD ADMIN ====== */
-function handleImgUpload(input){
+function imgFieldId(slot){ return slot === 1 ? 'pImg' : 'pImg'+slot; }
+function imgAreaId(slot){ return 'uploadArea'+slot; }
+function imgPreviewId(slot){ return 'uploadPreview'+slot; }
+function imgHintId(slot){ return 'uploadHint'+slot; }
+function imgBtnRowId(slot){ return 'uploadBtnRow'+slot; }
+function imgFileInputId(slot){ return 'imgFileInput'+slot; }
+
+function handleImgUpload(input, slot){
+  slot = slot || 1;
   if(!input.files || !input.files[0]){ return; }
   var file = input.files[0];
   var reader = new FileReader();
@@ -903,32 +911,28 @@ function handleImgUpload(input){
     var origSrc = e.target.result;
     var imgEl = new Image();
     imgEl.onload = function(){
-      /* Comprimir con Canvas: max 900px, calidad 78% */
       var maxSide = 900;
-      var w = imgEl.width;
-      var h = imgEl.height;
+      var w = imgEl.width; var h = imgEl.height;
       if(w > maxSide || h > maxSide){
         if(w >= h){ h = Math.round(h * maxSide / w); w = maxSide; }
         else { w = Math.round(w * maxSide / h); h = maxSide; }
       }
       var canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(imgEl, 0, 0, w, h);
-      showToast('Subiendo imagen...');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(imgEl, 0, 0, w, h);
+      showToast('Subiendo foto ' + slot + '...');
       canvas.toBlob(function(blob){
-        var fname = 'prod_'+Date.now()+'.jpg';
+        var fname = 'prod_'+Date.now()+'_'+slot+'.jpg';
         sbUpload(fname, blob, 'image/jpeg', function(err, url){
           if(err){
             var b64 = canvas.toDataURL('image/jpeg', 0.78);
-            getEl('pImg').value = b64;
-            setUploadPreview(b64);
-            showToast('Imagen cargada (local)');
+            getEl(imgFieldId(slot)).value = b64;
+            setUploadPreview(b64, slot);
+            showToast('Foto ' + slot + ' cargada');
           } else {
-            getEl('pImg').value = url;
-            setUploadPreview(url);
-            showToast('Imagen subida!');
+            getEl(imgFieldId(slot)).value = url;
+            setUploadPreview(url, slot);
+            showToast('Foto ' + slot + ' subida!');
           }
         });
       }, 'image/jpeg', 0.78);
@@ -938,11 +942,12 @@ function handleImgUpload(input){
   reader.readAsDataURL(file);
 }
 
-function setUploadPreview(src){
-  var area = getEl('uploadArea');
-  var preview = getEl('uploadPreview');
-  var hint = getEl('uploadHint');
-  var btnRow = getEl('uploadBtnRow');
+function setUploadPreview(src, slot){
+  slot = slot || 1;
+  var area = getEl(imgAreaId(slot));
+  var preview = getEl(imgPreviewId(slot));
+  var hint = getEl(imgHintId(slot));
+  var btnRow = getEl(imgBtnRowId(slot));
   if(!area || !preview){ return; }
   if(src && src.length > 10){
     preview.src = src;
@@ -959,21 +964,18 @@ function setUploadPreview(src){
   }
 }
 
-function clearImgUpload(){
-  getEl('pImg').value = '';
-  getEl('imgFileInput').value = '';
-  setUploadPreview('');
+function clearImgUpload(slot){
+  slot = slot || 1;
+  getEl(imgFieldId(slot)).value = '';
+  var fi = getEl(imgFileInputId(slot)); if(fi){ fi.value = ''; }
+  setUploadPreview('', slot);
 }
 
-function syncImgPreview(){
-  var val = getEl('pImg') ? getEl('pImg').value : '';
-  if(val && val.indexOf('http') === 0){
-    setUploadPreview(val);
-  } else if(val && val.indexOf('data:') === 0){
-    setUploadPreview(val);
-  } else {
-    setUploadPreview('');
-  }
+function syncImgPreview(slot){
+  slot = slot || 1;
+  var fid = imgFieldId(slot);
+  var val = getEl(fid) ? getEl(fid).value : '';
+  setUploadPreview((val && (val.indexOf('http') === 0 || val.indexOf('data:') === 0)) ? val : '', slot);
 }
 
 /* ====== VIDEO UPLOAD ADMIN ====== */
@@ -1059,8 +1061,7 @@ function clearForm(){
   getEl('pOld').value = '';
   getEl('pImg').value = '';
   clearVideoUpload();
-  if(getEl('imgFileInput')){ getEl('imgFileInput').value = ''; }
-  setUploadPreview('');
+  clearImgUpload(1); clearImgUpload(2); clearImgUpload(3);
   getEl('pOffer').checked = false;
 }
 function saveProd(){
@@ -1069,7 +1070,8 @@ function saveProd(){
   var price = parseInt(getEl('pPrice').value, 10); if(isNaN(price)){ price = 0; }
   var oldP = parseInt(getEl('pOld').value, 10); if(isNaN(oldP)){ oldP = 0; }
   var editId = getEl('editId').value;
-  var row = {name:name,price:price,old_price:oldP,category:getEl('pCat').value,img_url:getEl('pImg').value||'',video_url:getEl('pVideo')?getEl('pVideo').value||'':'',offer:!!getEl('pOffer').checked,cuota_n:3,cuota_si:true,active:true};
+  var pImg2 = getEl('pImg2'); var pImg3 = getEl('pImg3');
+  var row = {name:name,price:price,old_price:oldP,category:getEl('pCat').value,img_url:getEl('pImg').value||'',img_url_2:pImg2?pImg2.value||'':'',img_url_3:pImg3?pImg3.value||'':'',video_url:getEl('pVideo')?getEl('pVideo').value||'':'',offer:!!getEl('pOffer').checked,cuota_n:3,cuota_si:true,active:true};
   showToast('Guardando...');
   if(editId){
     sbPatch('productos?id=eq.'+editId, row, function(err){
@@ -1093,7 +1095,8 @@ function editProd(id){
   getEl('pPrice').value = p.price;
   getEl('pOld').value = p.old || '';
   getEl('pCat').value = p.cat;
-  getEl('pImg').value = p.img || ''; getEl('pVideo').value = p.video || ''; updateVideoPreview(); syncImgPreview(); setVideoUploadPreview(p.video || '');
+  getEl('pImg').value = p.img || ''; var f2=getEl('pImg2'); if(f2){f2.value=p.img2||'';} var f3=getEl('pImg3'); if(f3){f3.value=p.img3||'';}
+  getEl('pVideo').value = p.video || ''; updateVideoPreview(); syncImgPreview(1); syncImgPreview(2); syncImgPreview(3); setVideoUploadPreview(p.video || '');
   getEl('pOffer').checked = !!p.offer;
 }
 function delProd(id){
@@ -1153,19 +1156,47 @@ function openProductModal(id){
   var imgEl = getEl('pmImg');
   var ytIdModal = getYouTubeId(p.video || '');
   var isDirectVid = p.video && p.video.indexOf('http') === 0 && !ytIdModal;
-  if(ytIdModal){
-    imgEl.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytIdModal + '?rel=0&modestbranding=1" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:210px;display:block;border:0"></iframe>';
-    imgEl.style.background = '#000';
-  } else if(isDirectVid){
-    imgEl.innerHTML = '<video src="' + p.video + '" controls style="width:100%;height:100%;min-height:210px;display:block;background:#000;object-fit:contain"></video>';
-    imgEl.style.background = '#000';
-  } else {
-    var mImgSrc = p.img || '';
-    imgEl.innerHTML = mImgSrc
-      ? '<img src="' + mImgSrc + '" alt="' + p.name + '">'
-      : '<div class="noimg-big">SIN IMAGEN</div>';
-    imgEl.style.background = mImgSrc ? '#fff' : '#1a2330';
+  /* Galeria de fotos */
+  var photos = [];
+  if(p.img){ photos.push({type:'img',src:p.img}); }
+  if(p.img2){ photos.push({type:'img',src:p.img2}); }
+  if(p.img3){ photos.push({type:'img',src:p.img3}); }
+  if(ytIdModal){ photos.push({type:'yt',src:ytIdModal}); }
+  else if(isDirectVid){ photos.push({type:'vid',src:p.video}); }
+  if(photos.length === 0){ photos.push({type:'none'}); }
+  function renderGallery(idx){
+    var item = photos[idx];
+    var main = '';
+    if(item.type === 'img'){
+      main = '<img src="'+item.src+'" alt="foto" style="width:100%;height:100%;object-fit:cover;display:block">';
+      imgEl.style.background = '#fff';
+    } else if(item.type === 'yt'){
+      main = '<iframe src="https://www.youtube.com/embed/'+item.src+'?rel=0&modestbranding=1" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:210px;display:block;border:0"></iframe>';
+      imgEl.style.background = '#000';
+    } else if(item.type === 'vid'){
+      main = '<video src="'+item.src+'" controls style="width:100%;height:100%;min-height:210px;display:block;background:#000;object-fit:contain"></video>';
+      imgEl.style.background = '#000';
+    } else {
+      main = '<div class="noimg-big">SIN IMAGEN</div>';
+      imgEl.style.background = '#1a2330';
+    }
+    var thumbs = '';
+    if(photos.length > 1){
+      for(var t=0;t<photos.length;t++){
+        var ti = photos[t];
+        var tsrc = ti.type === 'img' ? ti.src : (ti.type === 'yt' ? 'https://img.youtube.com/vi/'+ti.src+'/mqdefault.jpg' : '');
+        var act = t === idx ? ' active' : '';
+        if(tsrc){ thumbs += '<img src="'+tsrc+'" class="gallery-thumb'+act+'" data-gi="'+t+'">'; }
+      }
+      thumbs = '<div class="gallery-strip">'+thumbs+'</div>';
+    }
+    imgEl.innerHTML = '<div class="gallery-main">'+main+'</div>'+thumbs;
+    var ts = imgEl.querySelectorAll('.gallery-thumb');
+    for(var k=0;k<ts.length;k++){
+      ts[k].onclick = function(){ renderGallery(parseInt(this.getAttribute('data-gi'),10)); };
+    }
   }
+  renderGallery(0);
   getEl('pmCat').innerHTML = p.cat;
   getEl('pmName').innerHTML = p.name;
   if(p.old && p.old > p.price){
