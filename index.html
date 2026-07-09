@@ -61,8 +61,8 @@ img{max-width:100%;display:block}
 .soc-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,164,55,0.4);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold-soft);transition:all .2s;flex-shrink:0}
 .soc-btn:hover{background:var(--gold);color:#15100a;transform:translateY(-2px)}
 .soc-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.gallery-strip{display:flex;gap:6px;padding:8px;background:#05080d;flex-shrink:0;overflow-x:auto}
-.gallery-thumb{width:58px;height:58px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.65;transition:all .2s;flex-shrink:0}
+.gallery-strip{display:flex;gap:5px;padding:5px 6px;background:#05080d;flex-shrink:0;overflow-x:auto}
+.gallery-thumb{width:42px;height:42px;border-radius:7px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.6;transition:all .2s;flex-shrink:0}
 .gallery-thumb.active{border-color:var(--gold);opacity:1}
 .gallery-main{flex:1;min-height:0;overflow:hidden;position:relative}
 .gallery-main img,.gallery-main video,.gallery-main iframe{width:100%;height:100%;object-fit:cover;display:block}
@@ -902,44 +902,60 @@ function imgHintId(slot){ return 'uploadHint'+slot; }
 function imgBtnRowId(slot){ return 'uploadBtnRow'+slot; }
 function imgFileInputId(slot){ return 'imgFileInput'+slot; }
 
+function doCompressUpload(source, w, h, slot){
+  var maxSide = 1200;
+  if(w > maxSide || h > maxSide){
+    if(w >= h){ h = Math.round(h * maxSide / w); w = maxSide; }
+    else { w = Math.round(w * maxSide / h); h = maxSide; }
+  }
+  var canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(source, 0, 0, w, h);
+  showToast('Subiendo foto ' + slot + '...');
+  canvas.toBlob(function(blob){
+    var fname = 'prod_'+Date.now()+'_'+slot+'.jpg';
+    sbUpload(fname, blob, 'image/jpeg', function(err, url){
+      if(err){
+        var b64 = canvas.toDataURL('image/jpeg', 0.80);
+        getEl(imgFieldId(slot)).value = b64;
+        setUploadPreview(b64, slot);
+        showToast('Foto ' + slot + ' cargada');
+      } else {
+        getEl(imgFieldId(slot)).value = url;
+        setUploadPreview(url, slot);
+        showToast('Foto ' + slot + ' subida!');
+      }
+    });
+  }, 'image/jpeg', 0.80);
+}
+
 function handleImgUpload(input, slot){
   slot = slot || 1;
   if(!input.files || !input.files[0]){ return; }
   var file = input.files[0];
-  var reader = new FileReader();
-  reader.onload = function(e){
-    var origSrc = e.target.result;
-    var imgEl = new Image();
-    imgEl.onload = function(){
-      var maxSide = 900;
-      var w = imgEl.width; var h = imgEl.height;
-      if(w > maxSide || h > maxSide){
-        if(w >= h){ h = Math.round(h * maxSide / w); w = maxSide; }
-        else { w = Math.round(w * maxSide / h); h = maxSide; }
-      }
-      var canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(imgEl, 0, 0, w, h);
-      showToast('Subiendo foto ' + slot + '...');
-      canvas.toBlob(function(blob){
-        var fname = 'prod_'+Date.now()+'_'+slot+'.jpg';
-        sbUpload(fname, blob, 'image/jpeg', function(err, url){
-          if(err){
-            var b64 = canvas.toDataURL('image/jpeg', 0.78);
-            getEl(imgFieldId(slot)).value = b64;
-            setUploadPreview(b64, slot);
-            showToast('Foto ' + slot + ' cargada');
-          } else {
-            getEl(imgFieldId(slot)).value = url;
-            setUploadPreview(url, slot);
-            showToast('Foto ' + slot + ' subida!');
-          }
-        });
-      }, 'image/jpeg', 0.78);
+  /* createImageBitmap respeta la rotacion EXIF del celular */
+  if(window.createImageBitmap){
+    window.createImageBitmap(file, {imageOrientation: 'from-image'}).then(function(bmp){
+      doCompressUpload(bmp, bmp.width, bmp.height, slot);
+    }).catch(function(){
+      /* fallback sin EXIF */
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){ doCompressUpload(img, img.width, img.height, slot); };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  } else {
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){ doCompressUpload(img, img.width, img.height, slot); };
+      img.src = e.target.result;
     };
-    imgEl.src = origSrc;
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  }
 }
 
 function setUploadPreview(src, slot){
