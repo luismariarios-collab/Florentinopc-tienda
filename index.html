@@ -490,6 +490,7 @@ footer .fnav a:hover{color:var(--gold)}
     </div>
     <div class="totals"><span class="lbl">Total</span><span class="tot" id="cartTotal">$0</span></div>
     <div class="cuota-line" id="cuotaLine"></div>
+    <button class="btn checkout" id="checkoutMP" style="background:#009ee3;color:#fff;border:none;margin-bottom:8px">Pagar con Mercado Pago</button>
     <button class="btn checkout" id="checkout">Finalizar por WhatsApp</button>
   </div>
 </aside>
@@ -862,6 +863,43 @@ function checkout(){
   else { text += '\nPago contado'; }
   var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text);
   window.open(url, '_blank');
+}
+
+/* ====== CHECKOUT MERCADO PAGO ====== */
+function payWithMP(){
+  if(cart.length === 0){ return; }
+  var btn = getEl('checkoutMP');
+  btn.disabled = true;
+  btn.innerHTML = 'Generando pago...';
+  var payload = {
+    cart: cart.map(function(c){ return { name: c.name, price: c.price, qty: c.qty }; }),
+    siteUrl: window.location.origin
+  };
+  var x = new XMLHttpRequest();
+  x.open('POST', SB_URL + '/functions/v1/create-preference');
+  x.setRequestHeader('Content-Type', 'application/json');
+  x.setRequestHeader('apikey', SB_KEY);
+  x.setRequestHeader('Authorization', 'Bearer ' + SB_KEY);
+  x.onload = function(){
+    btn.disabled = false;
+    btn.innerHTML = 'Pagar con Mercado Pago';
+    try{
+      var data = JSON.parse(x.responseText);
+      if(data.init_point){
+        window.location.href = data.init_point;
+      } else {
+        showToast('No se pudo iniciar el pago. Intenta de nuevo.');
+      }
+    }catch(e){
+      showToast('Error al conectar con Mercado Pago.');
+    }
+  };
+  x.onerror = function(){
+    btn.disabled = false;
+    btn.innerHTML = 'Pagar con Mercado Pago';
+    showToast('Error de conexion.');
+  };
+  x.send(JSON.stringify(payload));
 }
 
 /* ====== WHATSAPP SIMPLE ====== */
@@ -1289,6 +1327,7 @@ function init(){
   getEl('closeMenu').onclick = closeMenu;
   getEl('cuotasSel').onchange = updateTotals;
   getEl('checkout').onclick = checkout;
+  getEl('checkoutMP').onclick = payWithMP;
 
   getEl('waFloat').onclick = waSimple;
   getEl('heroWa').onclick = function(e){ e.preventDefault(); waSimple(); };
