@@ -414,7 +414,6 @@ footer .fnav a:hover{color:var(--gold)}
           <span class="promo-cuotas">3<small>cuotas</small></span>
         </div>
         <div class="promo-desc">Sin interes con tarjetas de credito vinculadas a la app, en toda la tienda.</div>
-        <div class="promo-valid">Vigente hasta el 30/06</div>
       </div>
       <div class="promo-card promo-bna">
         <div class="promo-top">
@@ -795,11 +794,8 @@ function renderCarousel(){
   var track = getEl('carouselTrack');
   if(!sec || !track){ return; }
   var picks = [];
-  for(var i = 0; i < products.length; i++){
+  for(var i = 0; i < products.length && picks.length < 6; i++){
     if(products[i].offer){ picks.push(products[i]); }
-  }
-  if(picks.length < 4){
-    picks = products.slice(0, 10);
   }
   if(picks.length === 0){ sec.style.display = 'none'; return; }
   var html = '';
