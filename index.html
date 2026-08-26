@@ -196,9 +196,23 @@ header{position:sticky;top:0;z-index:60;background:rgba(10,14,20,0.86);backdrop-
 .spec-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);flex-shrink:0}
 
 /* BENEFITS */
-.benefits{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.benefits-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
-.benefit{padding:26px 18px;display:flex;align-items:center;gap:14px;border-right:1px solid rgba(255,255,255,0.05)}
+/* TICKER */
+.ticker-bar{background:#d4a437;color:#15100a;font-size:12px;font-weight:700;letter-spacing:.8px;padding:7px 0;overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-block;animation:tickerMove 28s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes tickerMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:inline-block;padding:0 32px}
+.ticker-sep{opacity:.5}
+
+/* BENEFICIOS rediseñados */
+.benefits{background:var(--bg-2);padding:12px 0}
+.benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.benefit{background:#141b26;border-radius:12px;padding:16px 14px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.05);transition:border-color .2s}
+.benefit:hover{border-color:var(--gold)}
+.benefit .ic{width:38px;height:38px;border-radius:10px;background:rgba(212,164,55,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.benefit .ic svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.6}
+.benefit b{display:block;font-size:14px;color:#e8e4da;font-weight:700;margin-bottom:2px}
+.benefit small{font-size:11px;color:var(--muted);display:block}
 .benefit:last-child{border-right:none}
 .benefit .ic{font-size:26px;width:50px;height:50px;border-radius:12px;background:rgba(212,164,55,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .benefit b{display:block;font-family:'Oswald',sans-serif;font-size:16px;letter-spacing:.5px}
@@ -376,8 +390,7 @@ footer .fnav a:hover{color:var(--gold)}
 
 /* RESPONSIVE */
 @media(max-width:900px){
-  .benefits-grid{grid-template-columns:1fr 1fr}
-  .benefit:nth-child(2){border-right:none}
+  .benefits-grid{grid-template-columns:1fr 1fr}  .benefit:nth-child(2){border-right:none}
   .grid{grid-template-columns:1fr 1fr}
   .cats-grid{grid-template-columns:1fr 1fr}
   .contact-grid{grid-template-columns:1fr}
@@ -399,6 +412,32 @@ footer .fnav a:hover{color:var(--gold)}
 </style>
 </head>
 <body>
+
+<!-- TICKER -->
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item">&#10022; ENVIOS A TODO EL PAIS</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; 3 CUOTAS SIN INTERES &middot; CUENTA DNI</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; 12 CUOTAS SIN INTERES &middot; BANCO NACION</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; GARANTIA OFICIAL EN TODOS LOS EQUIPOS</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; SERVICIO TECNICO EN AMEGHINO</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; ENVIOS A TODO EL PAIS</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; 3 CUOTAS SIN INTERES &middot; CUENTA DNI</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; 12 CUOTAS SIN INTERES &middot; BANCO NACION</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; GARANTIA OFICIAL EN TODOS LOS EQUIPOS</span>
+    <span class="ticker-item ticker-sep">|</span>
+    <span class="ticker-item">&#10022; SERVICIO TECNICO EN AMEGHINO</span>
+    <span class="ticker-item ticker-sep">|</span>
+  </div>
+</div>
 
 <header>
   <div class="wrap nav">
@@ -446,10 +485,22 @@ footer .fnav a:hover{color:var(--gold)}
 <div class="benefits">
   <div class="wrap">
     <div class="benefits-grid">
-      <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 6h11v9H2z"/><path d="M13 10h4l4 3.2V15h-8"/><circle cx="6.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></div><div><b>Envios</b><small>A todo el pais</small></div></div>
-      <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M6 14.5h5"/></svg></div><div><b>3 cuotas sin interes</b><small>Promo Cuenta DNI</small></div></div>
-      <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l7.5 3v6c0 5-3.3 8-7.5 10-4.2-2-7.5-5-7.5-10v-6l7.5-3z"/><path d="M8.7 12l2.3 2.3 4.3-4.3"/></svg></div><div><b>Garantia</b><small>En todos los equipos</small></div></div>
-      <div class="benefit"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-5.5L20 9v12"/><path d="M9 21v-6.5h6V21"/><path d="M3.5 21h17"/></svg></div><div><b>Retiro en local</b><small>Calle 30 N&deg; 162</small></div></div>
+      <div class="benefit">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M6 14.5h5"/></svg></div>
+        <div><b>3 cuotas sin interes</b><small>Promo Cuenta DNI</small></div>
+      </div>
+      <div class="benefit">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M2 6h11v9H2z"/><path d="M13 10h4l4 3.2V15h-8"/><circle cx="6.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></div>
+        <div><b>Envios gratis</b><small>A todo el pais</small></div>
+      </div>
+      <div class="benefit">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div><b>Soporte</b><small>Pre y post venta</small></div>
+      </div>
+      <div class="benefit">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l7.5 3v6c0 5-3.3 8-7.5 10-4.2-2-7.5-5-7.5-10v-6l7.5-3z"/><path d="M8.7 12l2.3 2.3 4.3-4.3"/></svg></div>
+        <div><b>Garantia oficial</b><small>En todos los equipos</small></div>
+      </div>
     </div>
   </div>
 </div>
