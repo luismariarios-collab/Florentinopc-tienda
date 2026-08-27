@@ -132,9 +132,9 @@ header{position:sticky;top:0;z-index:60;background:rgba(10,14,20,0.86);backdrop-
 .burger{display:none;background:none;border:none;color:var(--text);font-size:26px;cursor:pointer}
 
 /* HERO */
-.hero{position:relative;min-height:62vh;display:flex;align-items:center;overflow:hidden;background:#05080d}
-.hero-bg{position:absolute;inset:0;background-image:url('./hero.jpg');background-size:cover;background-position:center 30%}
-@media (min-width:900px){.hero-bg{position:absolute;inset:0;background-image:url('./hero.jpg');background-size:cover;background-position:center 30%}}
+.hero{position:relative;min-height:75vh;display:flex;align-items:center;overflow:hidden;background:#05080d}
+.hero-bg{position:absolute;inset:0;background-image:url('./hero.jpg');background-size:cover;background-position:center bottom}
+@media (min-width:900px){.hero-bg{position:absolute;inset:0;background-image:url('./hero.jpg');background-size:cover;background-position:center bottom}}
 100%{transform:scale(1)}}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in-view{opacity:1;transform:translateY(0)}
