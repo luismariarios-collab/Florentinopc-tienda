@@ -93,7 +93,7 @@ img{max-width:100%;display:block}
 .soc-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,164,55,0.4);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold-soft);transition:all .2s;flex-shrink:0}
 .soc-btn:hover{background:var(--gold);color:#15100a;transform:translateY(-2px)}
 .soc-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.gallery-strip{display:flex;gap:5px;padding:5px 6px;background:#05080d;flex-shrink:0;overflow-x:auto}
+.gallery-strip{display:flex;gap:6px;padding:8px 10px;background:#05080d;flex-shrink:0;overflow-x:auto}
 .gallery-dots{display:flex;justify-content:center;gap:7px;padding:9px 6px;background:#05080d}
 .gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.25);cursor:pointer;transition:background .2s,transform .2s}
 .gallery-dot.active{background:var(--gold);transform:scale(1.25)}
@@ -138,15 +138,15 @@ header{position:sticky;top:0;z-index:60;background:rgba(10,14,20,0.86);backdrop-
 100%{transform:scale(1)}}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in-view{opacity:1;transform:translateY(0)}
-.promos-sec{padding:36px 0}
-.promos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.promo-card{border-radius:16px;padding:26px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,0.35)}
+.promos-sec{padding:16px 0}
+.promos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.promo-card{border-radius:12px;padding:14px 16px;color:#fff;position:relative;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
 .promo-card::after{content:'';position:absolute;top:-30%;right:-15%;width:60%;height:160%;background:rgba(255,255,255,0.08);transform:rotate(20deg)}
 .promo-dni{background:linear-gradient(135deg,#00b2a9,#00857a)}
 .promo-bna{background:linear-gradient(135deg,#0071ce,#004b93)}
 .promo-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .promo-bank{font-weight:700;font-size:14px;max-width:65%;line-height:1.25}
-.promo-cuotas{font-family:'Oswald',sans-serif;font-size:36px;font-weight:800;line-height:.85;text-align:right}
+.promo-cuotas{font-family:'Oswald',sans-serif;font-size:28px;font-weight:800;line-height:.85;text-align:right}
 .promo-cuotas small{display:block;font-size:11px;font-weight:400;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 .promo-desc{font-size:12.5px;opacity:.92;line-height:1.4;margin-bottom:10px}
 .promo-valid{font-size:11px;font-family:var(--font-mono);opacity:.75;border-top:1px solid rgba(255,255,255,0.2);padding-top:8px}
@@ -161,14 +161,14 @@ header{position:sticky;top:0;z-index:60;background:rgba(10,14,20,0.86);backdrop-
 .pay-strip small{color:var(--muted);font-size:12px}
 
 /* SERVICIO TECNICO */
-.tech-sec{padding:60px 0;background:linear-gradient(180deg,var(--bg-2),var(--bg))}
-.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:26px 0 30px}
-.tech-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 20px;transition:transform .2s,border-color .2s}
-.tech-card:hover{transform:translateY(-4px);border-color:var(--gold)}
-.tech-card .tc-ic{width:46px;height:46px;border-radius:12px;background:rgba(212,164,55,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-.tech-card .tc-ic svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.6}
-.tech-card h3{font-family:'Oswald',sans-serif;font-size:17px;color:#e8e4da;margin-bottom:6px}
-.tech-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.tech-sec{padding:40px 0;background:var(--bg-2)}
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+.tech-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 14px;transition:border-color .2s}
+.tech-card:hover{border-color:var(--gold)}
+.tech-card .tc-ic{width:36px;height:36px;border-radius:10px;background:rgba(212,164,55,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:var(--gold)}
+.tech-card .tc-ic svg{width:18px;height:18px}
+.tech-card h3{font-family:'Oswald',sans-serif;font-size:15px;color:#e8e4da;margin-bottom:4px}
+.tech-card p{font-size:12px;color:var(--muted);line-height:1.4;margin:0}
 
 /* RESEÑAS GOOGLE */
 
@@ -338,7 +338,7 @@ footer .fnav a:hover{color:var(--gold)}
 .pmodal{position:fixed;inset:0;z-index:131;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:none;opacity:0;transform:translateY(18px);transition:opacity .28s ease,transform .28s ease}
 .pmodal.open{opacity:1;transform:translateY(0);pointer-events:auto}
 .pmodal-box{background:var(--bg-2);border:1px solid rgba(212,164,55,0.25);border-radius:20px;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,0.7)}
-.pmodal-img{width:100%;aspect-ratio:16/9;background:#0a0e14;overflow:hidden;border-radius:20px 20px 0 0;flex-shrink:0;display:flex;flex-direction:column}
+.pmodal-img{width:100%;min-height:280px;max-height:420px;background:#0a0e14;overflow:hidden;border-radius:20px 20px 0 0;flex-shrink:0;display:flex;flex-direction:column}
 .gallery-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.55);border:1.5px solid rgba(255,255,255,0.2);color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:5;line-height:1;transition:background .2s}
 .gallery-nav-btn:hover{background:rgba(212,164,55,0.7);border-color:var(--gold)}
 .gallery-nav-btn.prev{left:8px}
@@ -363,7 +363,7 @@ footer .fnav a:hover{color:var(--gold)}
 .pmodal-wrap{position:relative}
 @media(min-width:600px){
   .pmodal-box{flex-direction:row;max-height:86vh}
-  .pmodal-img{width:45%;aspect-ratio:auto;border-radius:20px 0 0 20px;min-height:320px;display:flex;flex-direction:column}
+  .pmodal-img{width:45%;aspect-ratio:auto;border-radius:20px 0 0 20px;min-height:400px;max-height:none;display:flex;flex-direction:column}
   .pmodal-body{flex:1;overflow-y:auto;padding:28px 26px}
 }
 
@@ -508,71 +508,28 @@ footer .fnav a:hover{color:var(--gold)}
 <!-- PROMOS BANCARIAS -->
 <section class="promos-sec reveal" id="promosSec">
   <div class="wrap">
-    <span class="eyebrow">Beneficios</span>
-    <h2 class="display" style="font-size:26px;margin-bottom:18px">Promociones <i>bancarias</i></h2>
     <div class="promos-grid">
       <div class="promo-card promo-dni">
         <div class="promo-top">
-          <span class="promo-bank">&#128179;&nbsp;Cuenta DNI &middot; Banco Provincia</span>
+          <span class="promo-bank">Cuenta DNI · Banco Provincia</span>
           <span class="promo-cuotas">3<small>cuotas</small></span>
         </div>
-        <div class="promo-desc">Sin interes con tarjetas de credito vinculadas a la app, en toda la tienda.</div>
+        <div class="promo-desc">Sin interes con tarjetas vinculadas a la app.</div>
       </div>
       <div class="promo-card promo-bna">
         <div class="promo-top">
-          <span class="promo-bank">&#128179;&nbsp;Banco Nacion &middot; MODO</span>
+          <span class="promo-bank">Banco Nacion · MODO</span>
           <span class="promo-cuotas">12<small>cuotas</small></span>
         </div>
-        <div class="promo-desc">Sin interes con Visa y Mastercard, todos los dias.</div>
-        <div class="promo-valid">Vigente hasta el 28/02</div>
-      </div>
-    </div>
-    <div class="pay-strip">
-      <div class="pay-cards">
-        <span class="visa">VISA</span>
-        <span class="mc">MC</span>
-        <span class="nx">NX</span>
-        <span class="cabal">CABAL</span>
-      </div>
-      <div>
-        <b>Pagá con tarjeta de crédito</b>
-        <small>A través de la web</small>
+        <div class="promo-desc">Sin interes con Visa y Mastercard.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SERVICIO TECNICO -->
-<section class="tech-sec reveal" id="servicioTecnico">
-  <div class="wrap">
-    <span class="eyebrow">Nuestros servicios</span>
-    <h2 class="display" style="font-size:26px;margin-bottom:8px">Servicio tecnico en <i>FlorentinoPc</i></h2>
-    <p style="color:var(--muted);font-size:14px;max-width:520px;margin-bottom:6px">Armado, mantenimiento y reparacion de PC y notebooks, hecho por alguien que conoce tu equipo.</p>
-    <div class="tech-grid">
-      <div class="tech-card">
-        <div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div>
-        <h3>Limpieza fisica</h3>
-        <p>Eliminamos polvo y suciedad para mejorar la temperatura y el rendimiento.</p>
-      </div>
-      <div class="tech-card">
-        <div class="tc-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-        <h3>Diagnostico</h3>
-        <p>Detectamos fallas de hardware y software y te damos la mejor solucion.</p>
-      </div>
-      <div class="tech-card">
-        <div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l7.5 3v6c0 5-3.3 8-7.5 10-4.2-2-7.5-5-7.5-10v-6l7.5-3z"/><path d="M8.7 12l2.3 2.3 4.3-4.3"/></svg></div>
-        <h3>Instalacion y optimizacion</h3>
-        <p>Instalamos y optimizamos software para que tu equipo rinda al maximo.</p>
-      </div>
-      <div class="tech-card">
-        <div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M4 4l16 16M4 20L20 4"/></svg></div>
-        <h3>Actualizacion de componentes</h3>
-        <p>Te asesoramos y montamos las mejoras que tu PC necesita.</p>
-      </div>
-    </div>
-    <a href="#" class="btn btn-gold" id="techWa">Consultar servicio tecnico</a>
-  </div>
-</section>
+
+
+
 
 
 
@@ -616,6 +573,37 @@ footer .fnav a:hover{color:var(--gold)}
 </section>
 
 <!-- CONTACT -->
+<!-- SERVICIO TECNICO -->
+<section class="tech-sec reveal" id="servicioTecnico">
+  <div class="wrap">
+    <span class="eyebrow">Nuestros servicios</span>
+    <h2 class="display" style="font-size:22px;margin-bottom:14px">Servicio tecnico en <i>FlorentinoPc</i></h2>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l18 18"/><path d="M7 7l10 10"/></svg></div>
+        <h3>Limpieza fisica</h3>
+        <p>Polvo, temperatura y rendimiento.</p>
+      </div>
+      <div class="tech-card">
+        <div class="tc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h3>Diagnostico</h3>
+        <p>Fallas de hardware y software.</p>
+      </div>
+      <div class="tech-card">
+        <div class="tc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2.5l7.5 3v6c0 5-3.3 8-7.5 10-4.2-2-7.5-5-7.5-10v-6l7.5-3z"/><path d="M8.7 12l2.3 2.3 4.3-4.3"/></svg></div>
+        <h3>Instalacion</h3>
+        <p>Software optimizado para tu equipo.</p>
+      </div>
+      <div class="tech-card">
+        <div class="tc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <h3>Actualizacion</h3>
+        <p>Mejoras de componentes y armado.</p>
+      </div>
+    </div>
+    <a href="#" class="btn btn-gold" id="techWa" style="margin-top:16px">Consultar servicio tecnico</a>
+  </div>
+</section>
+
 <!-- INSTAGRAM STRIP -->
 <div style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);padding:22px 0">
   <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
@@ -1559,7 +1547,7 @@ function openProductModal(id){
       }
       dots = '<div class="gallery-dots">'+dots+'</div>';
     }
-    imgEl.innerHTML = '<div class="gallery-main" style="position:relative;flex:1;min-height:180px;overflow:hidden">'+prevBtn+main+nextBtn+counter+'</div>'+dots+thumbs;
+    imgEl.innerHTML = '<div class="gallery-main" style="position:relative;flex:1;min-height:260px;overflow:hidden">'+prevBtn+main+nextBtn+counter+'</div>'+dots+thumbs;
     var navs = imgEl.querySelectorAll('.gallery-nav-btn');
     for(var n=0;n<navs.length;n++){
       navs[n].onclick = function(){
