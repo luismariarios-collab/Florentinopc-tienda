@@ -876,10 +876,8 @@ footer .fnav a:hover{color:var(--gold)}
 <script>
 /* ====== CONFIG ====== */
 var WA_NUMBER = '5493388439333';   /* tu WhatsApp en formato internacional */
-var ADMIN_PASS = '0508';           /* CAMBIA esta clave por la que quieras */
-var SB_URL = 'https://qnzcdwnuusngugldxxyd.supabase.co';
-var SB_KEY = 'sb_publishable_G8SS_drW7_Sh61PTKomFsg__z1Hacqf';
-var SB_BUCKET = 'productos-img';
+var API_URL = 'https://summer-hill-8c74.luismariarios.workers.dev';
+var adminKey = '';
 
 
 /* ====== ESTADO ====== */
@@ -887,19 +885,18 @@ var products = [];
 var cart = [];
 var activeFilter = 'Todos';
 
-/* ====== SUPABASE HELPERS ====== */
-function sbGet(ep,cb){var x=new XMLHttpRequest();x.open('GET',SB_URL+'/rest/v1/'+ep);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.onload=function(){try{cb(null,JSON.parse(x.responseText));}catch(e){cb(e);}};x.onerror=function(){cb(new Error('red'));};x.send();}
-function sbPost(ep,body,cb){var x=new XMLHttpRequest();x.open('POST',SB_URL+'/rest/v1/'+ep);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.setRequestHeader('Content-Type','application/json');x.setRequestHeader('Prefer','return=representation');x.onload=function(){try{cb(null,JSON.parse(x.responseText));}catch(e){cb(e);}};x.onerror=function(){cb(new Error('red'));};x.send(JSON.stringify(body));}
-function sbPatch(ep,body,cb){var x=new XMLHttpRequest();x.open('PATCH',SB_URL+'/rest/v1/'+ep);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.setRequestHeader('Content-Type','application/json');x.setRequestHeader('Prefer','return=representation');x.onload=function(){try{cb(null,JSON.parse(x.responseText));}catch(e){cb(e);}};x.onerror=function(){cb(new Error('red'));};x.send(JSON.stringify(body));}
-function sbDel(ep,cb){var x=new XMLHttpRequest();x.open('DELETE',SB_URL+'/rest/v1/'+ep);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.onload=function(){cb(null);};x.onerror=function(){cb(new Error('red'));};x.send();}
-function sbUpload(fname,blob,mime,cb){var x=new XMLHttpRequest();x.open('POST',SB_URL+'/storage/v1/object/'+SB_BUCKET+'/'+fname);x.setRequestHeader('apikey',SB_KEY);x.setRequestHeader('Authorization','Bearer '+SB_KEY);x.setRequestHeader('Content-Type',mime);x.setRequestHeader('x-upsert','true');x.onload=function(){if(x.status>=200&&x.status<300){cb(null,SB_URL+'/storage/v1/object/public/'+SB_BUCKET+'/'+fname);}else{cb(new Error('upload '+x.status));}};x.onerror=function(){cb(new Error('red'));};x.send(blob);}
+/* ====== API (Cloudflare) ====== */
+function apiCall(method,path,body,headers,cb){var x=new XMLHttpRequest();x.open(method,API_URL+path);for(var h in headers){x.setRequestHeader(h,headers[h]);}x.onload=function(){var d=null;try{d=JSON.parse(x.responseText);}catch(e){}if(x.status>=200&&x.status<300){cb(null,d);}else{cb(new Error('http '+x.status),d);}};x.onerror=function(){cb(new Error('red'));};x.send(body);}
+function apiGet(path,cb){apiCall('GET',path,null,{},cb);}
+function apiAdmin(method,path,obj,cb){apiCall(method,path,obj?JSON.stringify(obj):null,{'Content-Type':'application/json','X-Admin-Key':adminKey},cb);}
+function apiUpload(fname,blob,mime,cb){apiCall('POST','/api/admin/upload?name='+encodeURIComponent(fname),blob,{'Content-Type':mime,'X-Admin-Key':adminKey},function(err,d){if(err||!d||!d.url){cb(err||new Error('upload'));}else{cb(null,d.url);}});}
 function rowToProduct(r){return {id:r.id,name:r.name,price:r.price||0,old:r.old_price||0,cat:r.category||'Notebooks',img:r.img_url||'',img2:r.img_url_2||'',img3:r.img_url_3||'',video:r.video_url||'',offer:!!r.offer,cuota_n:r.cuota_n||3,cuota_si:r.cuota_si!==false};}
 
 /* ====== STORAGE SEGURO ====== */
 function loadProducts(cb){
   var grid = getEl('grid');
   if(grid){ grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px 0">Cargando productos...</p>'; }
-  sbGet('productos?select=*&active=eq.true&order=sort_order.asc,created_at.asc',function(err,rows){
+  apiGet('/api/productos',function(err,rows){
     products = [];
     if(!err && Array.isArray(rows)){
       for(var i=0;i<rows.length;i++){ products.push(rowToProduct(rows[i])); }
@@ -1171,14 +1168,12 @@ function payWithMP(){
   btn.disabled = true;
   btn.innerHTML = '<span>Generando pago...</span>';
   var payload = {
-    cart: cart.map(function(c){ return { name: c.name, price: c.price, qty: c.qty }; }),
+    cart: cart.map(function(c){ return { id: c.id, qty: c.qty }; }),
     siteUrl: window.location.origin
   };
   var x = new XMLHttpRequest();
-  x.open('POST', SB_URL + '/functions/v1/create-preference');
+  x.open('POST', API_URL + '/api/create-preference');
   x.setRequestHeader('Content-Type', 'application/json');
-  x.setRequestHeader('apikey', SB_KEY);
-  x.setRequestHeader('Authorization', 'Bearer ' + SB_KEY);
   x.onload = function(){
     btn.disabled = false;
     btn.innerHTML = originalHTML;
@@ -1256,7 +1251,7 @@ function doCompressUpload(source, w, h, slot){
   showToast('Subiendo foto ' + slot + '...');
   canvas.toBlob(function(blob){
     var fname = 'prod_'+Date.now()+'_'+slot+'.jpg';
-    sbUpload(fname, blob, 'image/jpeg', function(err, url){
+    apiUpload(fname, blob, 'image/jpeg', function(err, url){
       if(err){
         var b64 = canvas.toDataURL('image/jpeg', 0.80);
         getEl(imgFieldId(slot)).value = b64;
@@ -1340,7 +1335,7 @@ function syncImgPreview(slot){
 function handleVideoUpload(input){
   if(!input.files || !input.files[0]){ return; }
   var file = input.files[0];
-  var maxMB = 200;
+  var maxMB = 90;
   if(file.size > maxMB * 1024 * 1024){
     showToast('El video pesa mas de ' + maxMB + 'MB. Usa YouTube para videos largos.');
     return;
@@ -1348,7 +1343,7 @@ function handleVideoUpload(input){
   showToast('Subiendo video...');
   var ext = file.name.split('.').pop() || 'mp4';
   var fname = 'video_' + Date.now() + '.' + ext;
-  sbUpload(fname, file, file.type || 'video/mp4', function(err, url){
+  apiUpload(fname, file, file.type || 'video/mp4', function(err, url){
     if(err){ showToast('Error al subir el video'); return; }
     getEl('pVideo').value = url;
     setVideoUploadPreview(url);
@@ -1402,15 +1397,16 @@ function updateVideoPreview(){
 
 /* ====== ADMIN ====== */
 function openAdmin(){ getEl('adminModal').className = 'modal open'; }
-function closeAdmin(){ getEl('adminModal').className = 'modal'; getEl('adminPanel').style.display = 'none'; getEl('adminLogin').style.display = 'block'; getEl('adminPass').value = ''; }
+function closeAdmin(){ adminKey = ''; getEl('adminModal').className = 'modal'; getEl('adminPanel').style.display = 'none'; getEl('adminLogin').style.display = 'block'; getEl('adminPass').value = ''; }
 function adminEnter(){
-  if(getEl('adminPass').value === ADMIN_PASS){
+  var pass = getEl('adminPass').value;
+  apiCall('POST','/api/admin/check',null,{'X-Admin-Key':pass},function(err){
+    if(err){ showToast(err.message === 'red' ? 'Sin conexion' : 'Clave incorrecta'); return; }
+    adminKey = pass;
     getEl('adminLogin').style.display = 'none';
     getEl('adminPanel').style.display = 'block';
     renderAdminList();
-  } else {
-    showToast('Clave incorrecta');
-  }
+  });
 }
 function clearForm(){
   getEl('editId').value = '';
@@ -1432,13 +1428,13 @@ function saveProd(){
   var row = {name:name,price:price,old_price:oldP,category:getEl('pCat').value,img_url:getEl('pImg').value||'',img_url_2:pImg2?pImg2.value||'':'',img_url_3:pImg3?pImg3.value||'':'',video_url:getEl('pVideo')?getEl('pVideo').value||'':'',offer:!!getEl('pOffer').checked,cuota_n:3,cuota_si:true,active:true};
   showToast('Guardando...');
   if(editId){
-    sbPatch('productos?id=eq.'+editId, row, function(err){
+    apiAdmin('PATCH','/api/admin/productos/'+encodeURIComponent(editId), row, function(err){
       if(err){ showToast('Error al guardar'); return; }
       clearForm();
       loadProducts(function(){ renderAdminList(); renderFilters(); renderGrid(); showToast('Producto actualizado'); });
     });
   } else {
-    sbPost('productos', row, function(err){
+    apiAdmin('POST','/api/admin/productos', row, function(err){
       if(err){ showToast('Error al guardar'); return; }
       clearForm();
       loadProducts(function(){ renderAdminList(); renderFilters(); renderGrid(); showToast('Producto guardado'); });
@@ -1459,7 +1455,7 @@ function editProd(id){
 }
 function delProd(id){
   if(!window.confirm('Borrar este producto?')){ return; }
-  sbDel('productos?id=eq.'+id, function(err){
+  apiAdmin('DELETE','/api/admin/productos/'+encodeURIComponent(id), null, function(err){
     if(err){ showToast('Error al borrar'); return; }
     loadProducts(function(){ renderAdminList(); renderFilters(); renderGrid(); });
   });
